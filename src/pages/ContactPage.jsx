@@ -2,10 +2,6 @@ import React, { useState } from "react";
 import { Footer, Navbar } from "../components";
 import Axios from "axios";
 const ContactPage = () => {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [username, setUserName] = useState("");
-  const [phone, setPhone] = useState(null);
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
