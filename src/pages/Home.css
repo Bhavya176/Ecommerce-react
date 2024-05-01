@@ -1,0 +1,14 @@
+.background-animation {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  width: 100vw;
+  height: 50vh;
+  z-index: 0; /* Ensure animation stays behind content */
+}
+
+.content {
+  position: relative; /* Ensure content is positioned relative to the viewport */
+  z-index: 1; /* Ensure content stays in front of animation */
+  /* Additional styles for your content */
+}

@@ -13,7 +13,7 @@ const Product = () => {
   const [similarProducts, setSimilarProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
-
+  console.log("id", id);
   const dispatch = useDispatch();
 
   const addProduct = (product) => {
@@ -24,15 +24,18 @@ const Product = () => {
     const getProduct = async () => {
       setLoading(true);
       setLoading2(true);
-      const response = await fetch(`https://fakestoreapi.com/products/${id}`);
+      const response = await fetch(`https://nodeapi-dzib.onrender.com/products/${id}`);
       const data = await response.json();
-      setProduct(data);
+      console.log("data",data.data);
+      setProduct(data.data);
       setLoading(false);
       const response2 = await fetch(
-        `https://fakestoreapi.com/products/category/${data.category}`
+        `https://nodeapi-dzib.onrender.com/products`
       );
       const data2 = await response2.json();
-      setSimilarProducts(data2);
+      const filtered = data2.data.filter((item) => item.category === data.data.category);
+      console.log("filtered",filtered);
+      setSimilarProducts(filtered);
       setLoading2(false);
     };
     getProduct();
@@ -41,7 +44,7 @@ const Product = () => {
   const Loading = () => {
     return (
       <>
-        <div className="container my-5 py-2">
+        <div className="container my-5 py-2" >
           <div className="row">
             <div className="col-md-6 py-3">
               <Skeleton height={400} width={400} />
@@ -175,12 +178,8 @@ const Product = () => {
         <div className="row">{loading ? <Loading /> : <ShowProduct />}</div>
         <div className="row my-5 py-5">
           <div className="d-none d-md-block">
-          <h2 className="">You may also Like</h2>
-            <Marquee
-              pauseOnHover={true}
-              pauseOnClick={true}
-              speed={50}
-            >
+            <h2 className="">You may also Like</h2>
+            <Marquee pauseOnHover={true} pauseOnClick={true} speed={50}>
               {loading2 ? <Loading2 /> : <ShowSimilarProduct />}
             </Marquee>
           </div>

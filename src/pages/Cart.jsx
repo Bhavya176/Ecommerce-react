@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { Footer, Navbar } from "../components";
 import { useSelector, useDispatch } from "react-redux";
 import { addCart, delCart } from "../redux/action";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const state = useSelector((state) => state.handleCart);
   const dispatch = useDispatch();
+  const state = useSelector((state) => state.handleCart);
+  const navigate = useNavigate();
 
+
+  // Function to handle checkout button click
+  const handleCheckout = () => {
+  const  loggedIn =localStorage.getItem("userInfo"); 
+    if (!loggedIn) {
+      // If not logged in, show alert
+      alert("Please login to proceed to checkout.");
+    } else {
+      // If logged in, navigate to checkout page
+      navigate("/checkout");
+    }
+  };
   const EmptyCart = () => {
     return (
       <div className="container">
@@ -129,7 +142,8 @@ const Cart = () => {
                   <div className="card-body">
                     <ul className="list-group list-group-flush">
                       <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                        Products ({totalItems})<span>${Math.round(subtotal)}</span>
+                        Products ({totalItems})
+                        <span>${Math.round(subtotal)}</span>
                       </li>
                       <li className="list-group-item d-flex justify-content-between align-items-center px-0">
                         Shipping
@@ -145,12 +159,12 @@ const Cart = () => {
                       </li>
                     </ul>
 
-                    <Link
-                      to="/checkout"
+                    <button
                       className="btn btn-dark btn-lg btn-block"
+                      onClick={handleCheckout} // Call handleCheckout function on button click
                     >
                       Go to checkout
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -168,6 +182,14 @@ const Cart = () => {
         <h1 className="text-center">Cart</h1>
         <hr />
         {state.length > 0 ? <ShowCart /> : <EmptyCart />}
+        {/* <div className="text-center">
+          <button
+            className="btn btn-dark btn-lg"
+            onClick={handleCheckout} // Call handleCheckout function on button click
+          >
+            Go to checkout
+          </button>
+        </div> */}
       </div>
       <Footer />
     </>
