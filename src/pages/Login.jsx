@@ -22,7 +22,9 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await Axios.post("https://nodeapi-dzib.onrender.com/users/login", {
+      const URL = process.env.REACT_APP_CLIENT_URL + "users" + "/login";
+
+      const response = await Axios.post(URL, {
         email,
         password,
       });

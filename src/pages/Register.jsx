@@ -16,15 +16,13 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await Axios.post(
-        "https://nodeapi-dzib.onrender.com/users/register",
-        userInfo
-      );
+      const URL = process.env.REACT_APP_CLIENT_URL + "users" + "/register";
+
+      const response = await Axios.post(URL, userInfo);
       alert(response.data.message);
       setError("");
       setUserInfo({ username: "", email: "", password: "" });
       navigate("/login");
-
     } catch (error) {
       if (error.response === undefined) {
         setError(error.message);

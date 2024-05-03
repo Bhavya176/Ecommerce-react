@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 const Checkout = () => {
   const state = useSelector((state) => state.handleCart);
-
   const EmptyCart = () => {
     return (
       <div className="container">

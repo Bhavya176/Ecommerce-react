@@ -1,26 +1,55 @@
-import React, { useState } from "react";
+import React from "react";
 import { Footer, Navbar } from "../components";
 import { useSelector, useDispatch } from "react-redux";
 import { addCart, delCart } from "../redux/action";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const state = useSelector((state) => state.handleCart);
-  const navigate = useNavigate();
-
-
   // Function to handle checkout button click
-  const handleCheckout = () => {
-  const  loggedIn =localStorage.getItem("userInfo"); 
-    if (!loggedIn) {
+  const handleCheckout = async () => {
+    const loggedIn = localStorage.getItem("userInfo");
+    const parseData = JSON.parse(loggedIn);
+    if (!parseData) {
       // If not logged in, show alert
       alert("Please login to proceed to checkout.");
     } else {
-      // If logged in, navigate to checkout page
-      navigate("/checkout");
+      const stripe = await loadStripe(process.env.REACT_APP_STRIPE);
+
+      const body = {
+        products: state,
+        customer: {
+          name: parseData.username,
+          email: parseData.email,
+        },
+      };
+
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const response = await fetch(
+        "http://localhost:5555/create-checkout-session",
+        {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(body),
+        }
+      );
+
+      const session = await response.json();
+
+      const result = stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+
+      if (result.error) {
+        console.log(result.error);
+      }
     }
   };
+
   const EmptyCart = () => {
     return (
       <div className="container">

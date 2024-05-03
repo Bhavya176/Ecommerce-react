@@ -12,3 +12,26 @@
   z-index: 1; /* Ensure content stays in front of animation */
   /* Additional styles for your content */
 }
+
+
+/* Define animation effect */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Apply animation effect to button */
+.add-to-cart-button {
+  transition: transform 0.3s ease;
+}
+
+.add-to-cart-button.clicked {
+  animation: pulse 0.5s linear;
+}

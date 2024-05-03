@@ -12,7 +12,9 @@ const ContactPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await Axios.post("https://nodeapi-dzib.onrender.com/contacts",userInfo);
+      const URL = process.env.REACT_APP_CLIENT_URL;
+
+      const response = await Axios.post(URL, userInfo);
 
       alert(response.data.message);
       setUserInfo({ name: "", email: "", phone: "", message: "" });

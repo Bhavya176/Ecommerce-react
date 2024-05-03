@@ -13,7 +13,6 @@ const Product = () => {
   const [similarProducts, setSimilarProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
-  console.log("id", id);
   const dispatch = useDispatch();
 
   const addProduct = (product) => {
@@ -24,17 +23,21 @@ const Product = () => {
     const getProduct = async () => {
       setLoading(true);
       setLoading2(true);
-      const response = await fetch(`https://nodeapi-dzib.onrender.com/products/${id}`);
+      const URL = process.env.REACT_APP_CLIENT_URL + id;
+
+      const response = await fetch(URL);
       const data = await response.json();
-      console.log("data",data.data);
+
       setProduct(data.data);
       setLoading(false);
-      const response2 = await fetch(
-        `https://nodeapi-dzib.onrender.com/products`
-      );
+      const URLBASE = process.env.REACT_APP_CLIENT_URL + "products";
+
+      const response2 = await fetch(URLBASE);
       const data2 = await response2.json();
-      const filtered = data2.data.filter((item) => item.category === data.data.category);
-      console.log("filtered",filtered);
+      const filtered = data2.data.filter(
+        (item) => item.category === data.data.category
+      );
+
       setSimilarProducts(filtered);
       setLoading2(false);
     };
@@ -44,7 +47,7 @@ const Product = () => {
   const Loading = () => {
     return (
       <>
-        <div className="container my-5 py-2" >
+        <div className="container my-5 py-2">
           <div className="row">
             <div className="col-md-6 py-3">
               <Skeleton height={400} width={400} />

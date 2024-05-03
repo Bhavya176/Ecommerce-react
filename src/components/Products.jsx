@@ -5,7 +5,7 @@ import { addCart } from "../redux/action";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Axios from "axios";
-
+import "./../pages/Home";
 import { Link } from "react-router-dom";
 
 const Products = () => {
@@ -19,15 +19,15 @@ const Products = () => {
   const addProduct = (product) => {
     dispatch(addCart(product));
   };
-
   useEffect(() => {
     const getProducts = async () => {
       setLoading(true);
       try {
-        const response = await Axios.get("https://nodeapi-dzib.onrender.com/products");
+        const URL = process.env.REACT_APP_CLIENT_URL + "products";
+        const response = await Axios.get(URL);
         if (componentMounted) {
-          setData(response.data.data);
-          setFilter(response.data.data);
+          setData(await response.data.data);
+          setFilter(await response.data.data);
           setLoading(false);
         }
       } catch (error) {
@@ -113,8 +113,8 @@ const Products = () => {
         {filter.map((product) => {
           return (
             <div
-              id={product.id}
-              key={product.id}
+              id={product._id}
+              key={product._id}
               className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4"
               style={{
                 animation: "fadeIn 0.5s ease-out", // Define animation
@@ -122,7 +122,7 @@ const Products = () => {
             >
               <div
                 className="card text-center h-100"
-                key={product.id}
+                key={product._id}
                 style={{
                   transition: "transform 0.2s ease-in-out", // Adding transition for smooth animation
                   height: "100%", // Set a fixed height for the card
@@ -168,8 +168,14 @@ const Products = () => {
                     Buy Now
                   </Link>
                   <button
-                    className="btn btn-dark m-1"
-                    onClick={() => addProduct(product)}
+                    className="btn btn-dark m-1 add-to-cart-button"
+                    onClick={(e) => {
+                      addProduct(product);
+                      e.target.classList.add("clicked"); // Add 'clicked' class to trigger animation
+                      setTimeout(() => {
+                        e.target.classList.remove("clicked"); // Remove 'clicked' class after animation duration
+                      }, 500);
+                    }}
                   >
                     Add to Cart
                   </button>
