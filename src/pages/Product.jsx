@@ -23,7 +23,7 @@ const Product = () => {
     const getProduct = async () => {
       setLoading(true);
       setLoading2(true);
-      const URL = process.env.REACT_APP_CLIENT_URL + id;
+      const URL = process.env.REACT_APP_CLIENT_URL + "products/" + id;
 
       const response = await fetch(URL);
       const data = await response.json();
@@ -136,7 +136,7 @@ const Product = () => {
           <div className="d-flex">
             {similarProducts.map((item) => {
               return (
-                <div key={item.id} className="card mx-4 text-center">
+                <div key={item._id} className="card mx-4 text-center">
                   <img
                     className="card-img-top p-3"
                     src={item.image}
@@ -154,7 +154,7 @@ const Product = () => {
                   </ul> */}
                   <div className="card-body">
                     <Link
-                      to={"/product/" + item.id}
+                      to={"/product/" + item._id}
                       className="btn btn-dark m-1"
                     >
                       Buy Now

@@ -7,16 +7,22 @@ const Home = () => {
         <div className="card bg-dark text-white border-0 mx-3">
           <img
             className="card-img img-fluid"
-            src="./assets/main.png.jpg"
+            src="./assets/big-sale.jpg"
             alt="Card"
-            height={500}
+            style={{ height: 500 }}
           />
           <div className="card-img-overlay d-flex align-items-center">
             <div className="container">
-              <h5 className="card-title fs-1 text fw-lighter">
+              <h5
+                className="card-title fs-1 text fw-lighter"
+                style={{ color: "black" }}
+              >
                 New Season Arrivals
               </h5>
-              <p className="card-text fs-5 d-none d-sm-block ">
+              <p
+                className="card-text fs-5 d-none d-sm-block"
+                style={{ color: "black" }}
+              >
                 This is a wider card with supporting text below as a natural
                 lead-in to additional content. This content is a little bit
                 longer.

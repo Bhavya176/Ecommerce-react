@@ -1,47 +1,115 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { addCart } from "../redux/action";
+import { useSelector } from "react-redux";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Axios from "axios";
 import "./../pages/Home";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import Modal from "react-modal";
 const Products = () => {
-  const [data, setData] = useState([]);
-  const [filter, setFilter] = useState(data);
-  const [loading, setLoading] = useState(false);
-  let componentMounted = true;
+  const userData = useSelector((state) => state.userReducer.userInfo?.role);
 
+  const [data, setData] = useState([]);
+  const [filter, setFilter] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const addProduct = (product) => {
     dispatch(addCart(product));
   };
-  useEffect(() => {
-    const getProducts = async () => {
-      setLoading(true);
-      try {
-        const URL = process.env.REACT_APP_CLIENT_URL + "products";
-        const response = await Axios.get(URL);
-        if (componentMounted) {
-          setData(await response.data.data);
-          setFilter(await response.data.data);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.log("error", error);
-      }
+  const getProducts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const URL = process.env.REACT_APP_CLIENT_URL + "products";
+      console.log("URL", URL);
+      const response = await Axios.get(URL);
 
-      return () => {
-        componentMounted = false;
-      };
+      setData(await response.data.data);
+      setFilter(await response.data.data);
+      setLoading(false);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }, []);
+  useEffect(() => {
+    getProducts();
+  }, [getProducts]);
+  const handleDelete = async (id) => {
+    console.log("id", id);
+    try {
+      const URL = process.env.REACT_APP_CLIENT_URL + "products/" + id;
+      console.log("URL", URL);
+      const response = await Axios.delete(URL);
+      console.log("response", response);
+      getProducts();
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+  useEffect(() => {
+    const filteredProducts = data.filter((product) =>
+      product.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilter(filteredProducts);
+  }, [searchQuery, data]);
+
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  const MyModal = ({ isOpen, onClose }) => {
+    const modalStyle = {
+      overlay: {
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: 1000, // Higher z-index value
+      },
+      content: {
+        top: "50%",
+        left: "50%",
+        right: "auto",
+        bottom: "auto",
+        marginRight: "-50%",
+        transform: "translate(-50%, -50%)",
+        borderRadius: "8px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+        padding: "20px",
+        maxWidth: "400px",
+        width: "90%",
+        textAlign: "center",
+        zIndex: 1001, // Higher z-index value
+      },
     };
 
-    getProducts();
-  }, []);
-
+    return (
+      <Modal isOpen={isOpen} onRequestClose={onClose} style={modalStyle}>
+        <h2>Added to Cart</h2>
+        <button
+          onClick={onClose}
+          style={{
+            marginTop: "10px",
+            padding: "8px 20px",
+            borderRadius: "4px",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Close Modal
+        </button>
+      </Modal>
+    );
+  };
   const Loading = () => {
     return (
       <>
@@ -77,7 +145,7 @@ const Products = () => {
   const ShowProducts = () => {
     return (
       <>
-        <div className="buttons text-center py-5">
+        <div className="buttons text-center py-3">
           <button
             className="btn btn-outline-dark btn-sm m-2"
             onClick={() => setFilter(data)}
@@ -121,7 +189,7 @@ const Products = () => {
               }}
             >
               <div
-                className="card text-center h-100"
+                className="card text-center h-100 position-relative" // added position-relative
                 key={product._id}
                 style={{
                   transition: "transform 0.2s ease-in-out", // Adding transition for smooth animation
@@ -134,6 +202,28 @@ const Products = () => {
                   e.currentTarget.style.transform = "scale(1)"; // Restore original scale on mouse leave
                 }}
               >
+                {userData === "admin" ? (
+                  <span
+                    className="position-absolute top-0 end-0 p-2 delete-icon"
+                    onClick={() => handleDelete(product._id)} // function to delete the product
+                    style={{
+                      cursor: "pointer", // Set cursor to pointer
+                      color: "#6c757d", // Set default color
+                      border: "1px solid #dee2e6", // Add border
+                      borderRadius: "20%", // Make the border circle
+                      background: "#fff", // Background color
+                      zIndex: "1", // Ensure the icon is above the card content
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = "#dc3545"; // Change color on hover
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = "#6c757d"; // Restore default color on mouse leave
+                    }}
+                  >
+                    <i className="bi bi-trash"></i> {/* trash icon */}
+                  </span>
+                ) : null}
                 <img
                   className="img-fluid"
                   src={product.image}
@@ -156,8 +246,6 @@ const Products = () => {
                 </div>
                 <ul className="list-group list-group-flush">
                   <li className="list-group-item lead">$ {product.price}</li>
-                  {/* <li className="list-group-item">Dapibus ac facilisis in</li>
-            <li className="list-group-item">Vestibulum at eros</li> */}
                 </ul>
 
                 <div className="card-body">
@@ -171,6 +259,7 @@ const Products = () => {
                     className="btn btn-dark m-1 add-to-cart-button"
                     onClick={(e) => {
                       addProduct(product);
+                      setIsModalOpen(true);
                       e.target.classList.add("clicked"); // Add 'clicked' class to trigger animation
                       setTimeout(() => {
                         e.target.classList.remove("clicked"); // Remove 'clicked' class after animation duration
@@ -197,8 +286,28 @@ const Products = () => {
           </div>
         </div>
         <div className="row justify-content-center">
+          <div className="col-md-6">
+            <input
+              type="text"
+              className="form-control "
+              placeholder="Search Products..."
+              value={searchQuery}
+              onChange={handleSearchInputChange}
+            />
+          </div>
+        </div>
+        {userData === "admin" ? (
+          <button
+            className=" px-4  btn btn-dark"
+            onClick={() => navigate("addProduct")}
+          >
+            Add Product
+          </button>
+        ) : null}
+        <div className="row justify-content-center">
           {loading ? <Loading /> : <ShowProducts />}
         </div>
+        <MyModal isOpen={isModalOpen} onClose={closeModal} />
       </div>
     </>
   );

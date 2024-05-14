@@ -5,7 +5,7 @@ const ContactPage = () => {
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
-    phone: null,
+    phone: undefined,
     message: "",
   });
   const [error, setError] = useState("");
@@ -34,14 +34,14 @@ const ContactPage = () => {
       <div className="container my-3 py-3">
         <h1 className="text-center">Contact Us</h1>
         <hr />
-        <div class="row my-4 h-100">
+        <div className="row my-4 h-100">
           <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
             <form onSubmit={handleSubmit}>
-              <div class="form my-3">
-                <label for="Name">Name</label>
+              <div className="form my-3">
+                <label htmlFor="Name">Name</label>
                 <input
                   type="name"
-                  class="form-control"
+                  className="form-control"
                   id="Name"
                   placeholder="Enter your name"
                   value={userInfo.name} // Use userInfo.username as value
@@ -53,11 +53,11 @@ const ContactPage = () => {
                   }
                 />
               </div>
-              <div class="form my-3">
-                <label for="phone">Phone</label>
+              <div className="form my-3">
+                <label htmlFor="phone">Phone</label>
                 <input
                   type="phone"
-                  class="form-control"
+                  className="form-control"
                   id="Phone"
                   placeholder="1234567890"
                   value={userInfo.phone} // Use userInfo.username as value
@@ -69,11 +69,11 @@ const ContactPage = () => {
                   }
                 />
               </div>
-              <div class="form my-3">
-                <label for="Email">Email</label>
+              <div className="form my-3">
+                <label htmlFor="Email">Email</label>
                 <input
                   type="email"
-                  class="form-control"
+                  className="form-control"
                   id="Email"
                   placeholder="name@example.com"
                   value={userInfo.email} // Use userInfo.username as value
@@ -85,11 +85,11 @@ const ContactPage = () => {
                   }
                 />
               </div>
-              <div class="form  my-3">
-                <label for="Password">Message</label>
+              <div className="form  my-3">
+                <label htmlFor="Password">Message</label>
                 <textarea
                   rows={5}
-                  class="form-control"
+                  className="form-control"
                   id="Password"
                   placeholder="Enter your message"
                   value={userInfo.message} // Use userInfo.username as value
@@ -102,7 +102,10 @@ const ContactPage = () => {
                 />
               </div>
               <div className="text-center">
-                <button class="my-2 px-4 mx-auto btn btn-dark" type="submit">
+                <button
+                  className="my-2 px-4 mx-auto btn btn-dark"
+                  type="submit"
+                >
                   Send
                 </button>
               </div>

@@ -1,37 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 import { Footer, Navbar } from "../components";
-
+import { Buffer } from "buffer";
+import { addUser, deleteAllItemsFromCart } from "../redux/action";
+import { useDispatch, useSelector } from "react-redux";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
   const [error, setError] = useState("");
-
+  const dispatch = useDispatch();
+  const userData = useSelector((state) => state.userReducer.userInfo);
   // Check if user info exists in localStorage on component mount
-  useEffect(() => {
-    const storedUserInfo = localStorage.getItem("userInfo");
-    if (storedUserInfo) {
-      setUserInfo(JSON.parse(storedUserInfo));
-      setLoggedIn(true);
-    }
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const URL = process.env.REACT_APP_CLIENT_URL + "users" + "/login";
+      const URL = `${process.env.REACT_APP_CLIENT_URL}users/login`;
 
       const response = await Axios.post(URL, {
         email,
         password,
       });
       const userData = response.data.userInfo;
-      setUserInfo(userData);
-      setLoggedIn(true);
-      localStorage.setItem("userInfo", JSON.stringify(userData)); // Store user info in localStorage
+      dispatch(addUser(userData));
       alert(response.data.message);
       setError("");
     } catch (error) {
@@ -44,9 +36,11 @@ const Login = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("userInfo");
-    setLoggedIn(false);
-    setUserInfo(null);
+    localStorage.clear();
+
+    dispatch(deleteAllItemsFromCart());
+
+    dispatch(addUser(null));
   };
 
   return (
@@ -56,11 +50,24 @@ const Login = () => {
         <h1 className="text-center">Login</h1>
         <hr />
         <div className="row my-4 h-100">
-          <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
-            {loggedIn ? (
-              <div>
-                <p>User: {userInfo.username}</p>
-                <p>Email: {userInfo.email}</p>
+          <div className="col-md-6 offset-md-3 col-lg-4 offset-lg-4 col-sm-8 offset-sm-2">
+            {userData ? (
+              <div className="text-center">
+                {userData?.img && (
+                  <img
+                    src={`data:${
+                      userData?.img.contentType
+                    };base64,${Buffer.from(userData?.img.data).toString(
+                      "base64"
+                    )}`} // Render image
+                    alt="Profile"
+                    className="rounded-circle mb-3"
+                    style={{ maxWidth: "200px", maxHeight: "200px" }}
+                  />
+                )}
+                <h4>{userData?.username}</h4>
+                <p>{userData?.email}</p>
+
                 <button className="btn btn-danger" onClick={handleLogout}>
                   Logout
                 </button>
@@ -101,11 +108,7 @@ const Login = () => {
                   </p>
                 </div>
                 <div className="text-center">
-                  <button
-                    className="my-2 mx-auto btn btn-dark"
-                    type="submit"
-                    disabled={loggedIn}
-                  >
+                  <button className="my-2 mx-auto btn btn-dark" type="submit">
                     Login
                   </button>
                 </div>

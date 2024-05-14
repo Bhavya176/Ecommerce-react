@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Footer, Navbar } from "../components";
 import { Link, useNavigate } from "react-router-dom";
-
 import Axios from "axios";
 
 const Register = () => {
@@ -11,17 +10,39 @@ const Register = () => {
     username: "",
     email: "",
     password: "",
+    image: null, // New state for image
   });
   const [error, setError] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const URL = process.env.REACT_APP_CLIENT_URL + "users" + "/register";
+      const URL = `${process.env.REACT_APP_CLIENT_URL}users/register`;
 
-      const response = await Axios.post(URL, userInfo);
+      const formData = new FormData();
+      formData.append("username", userInfo.username);
+      formData.append("email", userInfo.email);
+      formData.append("password", userInfo.password);
+      formData.append("image", userInfo.image); // Append image to FormData
+      console.log("userInfo", userInfo);
+      const response = await Axios.post(
+        URL,
+        formData, // Use FormData instead of userInfo
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Set Content-Type for FormData
+          },
+        }
+      );
+
       alert(response.data.message);
       setError("");
-      setUserInfo({ username: "", email: "", password: "" });
+      setUserInfo({
+        username: "",
+        email: "",
+        password: "",
+        image: null, // Reset image state after successful registration
+      });
       navigate("/login");
     } catch (error) {
       if (error.response === undefined) {
@@ -31,66 +52,83 @@ const Register = () => {
       }
     }
   };
+
+  const handleImageChange = (e) => {
+    setUserInfo((prevState) => ({
+      ...prevState,
+      image: e.target.files[0], // Set image state when user selects a file
+    }));
+  };
+
   return (
     <>
       <Navbar />
       <div className="container my-3 py-3">
         <h1 className="text-center">Register</h1>
         <hr />
-        <div class="row my-4 h-100">
+        <div className="row my-4 h-100">
           <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
             <form onSubmit={handleSubmit}>
-              <div class="form my-3">
-                <label for="Name">Full Name</label>
+              <div className="form my-3">
+                <label htmlFor="Name">Full Name</label>
                 <input
-                  type="text" // Change type to "text"
-                  class="form-control"
+                  type="text"
+                  className="form-control"
                   id="Name"
                   placeholder="Enter Your Name"
-                  value={userInfo.username} // Use userInfo.username as value
+                  value={userInfo.username}
                   onChange={(e) =>
                     setUserInfo((prevState) => ({
-                      ...prevState, // Spread previous state
-                      username: e.target.value, // Update username field
+                      ...prevState,
+                      username: e.target.value,
                     }))
                   }
                 />
               </div>
-              <div class="form my-3">
-                <label for="Email">Email address</label>
+              <div className="form my-3">
+                <label htmlFor="Email">Email address</label>
                 <input
                   type="email"
                   className="form-control"
                   id="email"
                   placeholder="name@example.com"
-                  value={userInfo.email} // Use userInfo.username as value
+                  value={userInfo.email}
                   onChange={(e) =>
                     setUserInfo((prevState) => ({
-                      ...prevState, // Spread previous state
-                      email: e.target.value, // Update username field
+                      ...prevState,
+                      email: e.target.value,
                     }))
                   }
                 />
               </div>
-              <div class="form  my-3">
-                <label for="Password">Password</label>
+              <div className="form  my-3">
+                <label htmlFor="Password">Password</label>
                 <input
                   type="password"
                   className="form-control"
                   id="password"
                   placeholder="Password"
-                  value={userInfo.password} // Use userInfo.username as value
+                  value={userInfo.password}
                   onChange={(e) =>
                     setUserInfo((prevState) => ({
-                      ...prevState, // Spread previous state
-                      password: e.target.value, // Update username field
+                      ...prevState,
+                      password: e.target.value,
                     }))
                   }
                 />
               </div>
+              <div className="form my-3">
+                <label htmlFor="Image">Profile Image</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="image"
+                  onChange={handleImageChange} // Handle image change
+                />
+              </div>
               <div className="my-3">
                 <p>
-                  Already has an account?{" "}
+                  Already have an account?{" "}
                   <Link
                     to="/login"
                     className="text-decoration-underline text-info"
@@ -100,7 +138,7 @@ const Register = () => {
                 </p>
               </div>
               <div className="text-center">
-                <button class="my-2 mx-auto btn btn-dark" type="submit">
+                <button className="my-2 mx-auto btn btn-dark" type="submit">
                   Register
                 </button>
               </div>

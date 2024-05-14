@@ -8,11 +8,10 @@ import { loadStripe } from "@stripe/stripe-js";
 const Cart = () => {
   const dispatch = useDispatch();
   const state = useSelector((state) => state.handleCart);
+  const userData = useSelector((state) => state.userReducer.userInfo);
   // Function to handle checkout button click
   const handleCheckout = async () => {
-    const loggedIn = localStorage.getItem("userInfo");
-    const parseData = JSON.parse(loggedIn);
-    if (!parseData) {
+    if (!userData) {
       // If not logged in, show alert
       alert("Please login to proceed to checkout.");
     } else {
@@ -21,22 +20,21 @@ const Cart = () => {
       const body = {
         products: state,
         customer: {
-          name: parseData.username,
-          email: parseData.email,
+          name: userData.username,
+          email: userData.email,
         },
       };
 
       const headers = {
         "Content-Type": "application/json",
       };
-      const response = await fetch(
-        "http://localhost:5555/create-checkout-session",
-        {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify(body),
-        }
-      );
+      const URL = `${process.env.REACT_APP_CLIENT_URL}api/create-checkout-session`;
+
+      const response = await fetch(URL, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body),
+      });
 
       const session = await response.json();
 
@@ -74,7 +72,7 @@ const Cart = () => {
 
   const ShowCart = () => {
     let subtotal = 0;
-    let shipping = 30.0;
+    let shipping = 15.0;
     let totalItems = 0;
     state.map((item) => {
       return (subtotal += item.price * item.qty);
