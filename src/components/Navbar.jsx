@@ -45,6 +45,11 @@ const Navbar = () => {
                 Contact
               </NavLink>
             </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/chat">
+                Chat
+              </NavLink>
+            </li>
           </ul>
           <div className="buttons text-center">
             <NavLink
