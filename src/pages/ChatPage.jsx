@@ -3,6 +3,8 @@ import { Footer, Navbar } from "../components";
 import socketIOClient from "socket.io-client";
 import Axios from "axios";
 import { useSelector } from "react-redux";
+import "../style/ChatPage.css";
+import { useNavigate } from "react-router-dom";
 
 const ENDPOINT = "http://localhost:5555";
 
@@ -14,6 +16,8 @@ const ChatPage = () => {
   const [admins, setAdmins] = useState([]); // All admins (for users)
   const socketRef = useRef();
   const userData = useSelector((state) => state.userReducer.userInfo);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     socketRef.current = socketIOClient(ENDPOINT);
@@ -76,87 +80,95 @@ const ChatPage = () => {
 
   const getUsername = (id) => {
     const senderID = id._id === undefined ? id : id._id;
-    if (senderID === userData.id) return "You";
+    if (senderID === userData.id) return userData.username;
     const user =
       users.find((u) => u._id === senderID) ||
       admins.find((a) => a._id === senderID);
     return user ? user.username : "Unknown";
   };
 
+  const filteredMessages = selectedUser
+    ? messages.filter((msg) => {
+        const senderId =
+          msg.sender._id === undefined ? msg.sender : msg.sender._id;
+        const receiverId =
+          msg.sender._id === undefined ? msg.receiver : msg.receiver._id;
+        return (
+          (senderId === selectedUser._id && receiverId === userData.id) ||
+          (senderId === userData.id && receiverId === selectedUser._id)
+        );
+      })
+    : [];
+  useEffect(() => {
+    if (userData === null) {
+      navigate("*");
+    } else {
+      setIsAdmin(true);
+    }
+  }, [userData, navigate]);
+
   return (
     <>
       <Navbar />
-      <div className="container my-3 py-3">
-        <h1 className="text-center">Chat</h1>
-        <hr />
-        <div>
-          {userData.role === "admin" && (
-            <div>
-              <h2>User List</h2>
-              {users.map((u) => (
-                <div key={u._id} onClick={() => handleSelectUser(u)}>
-                  {u.username}
-                </div>
-              ))}
-            </div>
-          )}
-          <div>
-            <h2>Messages</h2>
-            <div>
-              {console.log("messages", messages)}
-              {messages.map((msg) => (
-                <div
-                  key={msg._id || `${msg.sender}-${msg.content}`}
-                  style={{
-                    display: "flex",
-                    justifyContent:
+      {isAdmin === true ? (
+        <div className="container my-3 py-3">
+          <h1 className="text-center">Chat</h1>
+          <hr />
+          <div className="chat-container">
+            {userData.role === "admin" && (
+              <div className="user-list">
+                <h2>User List</h2>
+                {users.map((u) => (
+                  <div
+                    key={u._id}
+                    className={`user-item ${
+                      selectedUser?._id === u._id ? "selected" : ""
+                    }`}
+                    onClick={() => handleSelectUser(u)}
+                  >
+                    {u.username}
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="chat-box">
+              <h2>Messages</h2>
+              <div className="messages">
+                {filteredMessages.map((msg) => (
+                  <div
+                    key={msg._id || `${msg.sender}-${msg.content}`}
+                    className={`message-item ${
                       userData.id ===
                       (msg.sender._id === undefined
                         ? msg.sender
                         : msg.sender._id)
-                        ? "flex-end"
-                        : "flex-start",
-                    margin: "10px 0",
-                  }}
-                >
-                  <div
-                    style={{
-                      maxWidth: "60%",
-                      padding: "10px",
-                      borderRadius: "10px",
-                      backgroundColor:
-                        userData.id ===
-                        (msg.sender._id === undefined
-                          ? msg.sender
-                          : msg.sender._id)
-                          ? "#007bff"
-                          : "#f0f0f0",
-                      color:
-                        userData.id ===
-                        (msg.sender._id === undefined
-                          ? msg.sender
-                          : msg.sender._id)
-                          ? "#fff"
-                          : "#000",
-                    }}
+                        ? "sent"
+                        : "received"
+                    }`}
                   >
-                    <strong>{getUsername(msg.sender)}</strong>: {msg.content}
+                    <div className="message-content">
+                      <strong>{getUsername(msg.sender)}</strong>: {msg.content}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              <div className="message-input-container">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  className="message-input"
+                />
+                <button onClick={sendMessage} className="send-button">
+                  Send
+                </button>
+              </div>
             </div>
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              style={{ width: "80%", marginRight: "10px" }}
-            />
-            <button onClick={sendMessage} style={{ padding: "10px 20px" }}>
-              Send
-            </button>
           </div>
         </div>
-      </div>
+      ) : (
+        <></>
+      )}
       <Footer />
     </>
   );
