@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import "../style/ChatPage.css";
 import { useNavigate } from "react-router-dom";
 
-const ENDPOINT = "http://localhost:5555";
+const ENDPOINT = process.env.REACT_APP_CLIENT_URL;
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
@@ -37,11 +37,11 @@ const ChatPage = () => {
 
   const getData = async () => {
     try {
-      const usersResponse = await Axios.get(`${ENDPOINT}/users/getUser`);
+      const usersResponse = await Axios.get(`${ENDPOINT}users/getUser`);
       const usersData = usersResponse.data.data;
       setUsers(usersData);
 
-      const adminsResponse = await Axios.get(`${ENDPOINT}/users/getAdmin`);
+      const adminsResponse = await Axios.get(`${ENDPOINT}users/getAdmin`);
       const adminsData = adminsResponse.data.data;
       setAdmins(adminsData);
     } catch (error) {
