@@ -78,11 +78,25 @@
   gap: 10px;
 }
 
-.message-input {
+.input-container {
+  position: relative;
   flex: 1;
-  padding: 10px;
+}
+
+.message-input {
+  padding: 10px 40px 10px 10px; /* Adjust right padding to accommodate the icon */
   border: 1px solid #ddd;
   border-radius: 10px;
+  width: 100%;
+}
+
+.audio-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #000000; /* Icon color */
 }
 
 .send-button {

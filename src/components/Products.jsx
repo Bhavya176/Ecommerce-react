@@ -2,13 +2,17 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { addCart } from "../redux/action";
 import { useSelector } from "react-redux";
-
+import { AiTwotoneAudio } from "react-icons/ai";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Axios from "axios";
 import "./../pages/Home";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "react-modal";
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+var current, transcript, upperCase;
 const Products = () => {
   const userData = useSelector((state) => state.userReducer.userInfo?.role);
 
@@ -19,7 +23,15 @@ const Products = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const startRecord = (e) => {
+    recognition.start(e);
+    recognition.onresult = (e) => {
+      current = e.resultIndex;
+      transcript = e.results[current][0].transcript;
+      upperCase = transcript.charAt(0).toUpperCase() + transcript.substring(1);
+      setSearchQuery(transcript);
+    };
+  };
   // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
@@ -286,14 +298,30 @@ const Products = () => {
           </div>
         </div>
         <div className="row justify-content-center">
-          <div className="col-md-6">
+          <div className="col-md-6" style={{ position: "relative" }}>
             <input
               type="text"
-              className="form-control "
+              className="form-control"
               placeholder="Search Products..."
               value={searchQuery}
               onChange={handleSearchInputChange}
+              style={{ paddingRight: "40px" }}
             />
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                right: "12px",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                border: "1px solid #ccc",
+                borderRadius: "10%",
+                padding: "5px",
+              }}
+              onClick={(e) => startRecord(e)}
+            >
+              <AiTwotoneAudio />
+            </div>
           </div>
         </div>
         {userData === "admin" ? (

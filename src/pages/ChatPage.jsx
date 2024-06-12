@@ -5,9 +5,13 @@ import Axios from "axios";
 import { useSelector } from "react-redux";
 import "../style/ChatPage.css";
 import { useNavigate } from "react-router-dom";
+import { AiTwotoneAudio } from "react-icons/ai";
 
 const ENDPOINT = process.env.REACT_APP_CLIENT_URL;
-
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+var current, transcript, upperCase;
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -18,7 +22,15 @@ const ChatPage = () => {
   const userData = useSelector((state) => state.userReducer.userInfo);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-
+  const startRecord = (e) => {
+    recognition.start(e);
+    recognition.onresult = (e) => {
+      current = e.resultIndex;
+      transcript = e.results[current][0].transcript;
+      upperCase = transcript.charAt(0).toUpperCase() + transcript.substring(1);
+      setInput(transcript);
+    };
+  };
   useEffect(() => {
     socketRef.current = socketIOClient(ENDPOINT);
 
@@ -152,13 +164,20 @@ const ChatPage = () => {
                   </div>
                 ))}
               </div>
+
               <div className="message-input-container">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  className="message-input"
-                />
+                <div className="input-container">
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    className="message-input"
+                  />
+                  <div className="audio-icon" onClick={(e) => startRecord(e)}>
+                    <AiTwotoneAudio />
+                  </div>
+                </div>
+
                 <button onClick={sendMessage} className="send-button">
                   Send
                 </button>
