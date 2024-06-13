@@ -129,7 +129,7 @@ const ChatPage = () => {
           <div className="chat-container">
             {userData.role === "admin" && (
               <div className="user-list">
-                <h2>User List</h2>
+                <h2>User Lists</h2>
                 {users.map((u) => (
                   <div
                     key={u._id}
