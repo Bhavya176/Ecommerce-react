@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import "../style/ChatPage.css";
 import { useNavigate } from "react-router-dom";
 import { AiTwotoneAudio } from "react-icons/ai";
-
+import { MdSend } from "react-icons/md";
 const ENDPOINT = process.env.REACT_APP_CLIENT_URL;
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -123,9 +123,10 @@ const ChatPage = () => {
     <>
       <Navbar />
       {isAdmin === true ? (
-        <div className="container my-3 py-3">
+        <div className="container  py-3">
           <h1 className="text-center">Chat</h1>
           <hr />
+
           <div className="chat-container">
             {userData.role === "admin" && (
               <div className="user-list">
@@ -144,7 +145,6 @@ const ChatPage = () => {
               </div>
             )}
             <div className="chat-box">
-              <h2>Messages</h2>
               <div className="messages">
                 {filteredMessages.map((msg) => (
                   <div
@@ -177,10 +177,9 @@ const ChatPage = () => {
                     <AiTwotoneAudio />
                   </div>
                 </div>
-
-                <button onClick={sendMessage} className="send-button">
-                  Send
-                </button>
+                <div className="send-button" onClick={sendMessage}>
+                  <MdSend />
+                </div>
               </div>
             </div>
           </div>

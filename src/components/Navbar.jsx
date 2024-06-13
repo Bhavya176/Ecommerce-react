@@ -5,8 +5,8 @@ import { useSelector } from "react-redux";
 const Navbar = () => {
   const state = useSelector((state) => state.handleCart);
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark py-3 sticky-top">
-      <div className="container">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <div className="container py-0">
         <NavLink className="navbar-brand fw-bold fs-4 px-2" to="/">
           {" "}
           React Ecommerce
