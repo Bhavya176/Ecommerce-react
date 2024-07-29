@@ -37,6 +37,7 @@ const Product = () => {
       const filtered = data2.data.filter(
         (item) => item.category === data.data.category
       );
+      window.scrollTo({ top: 0, behavior: "smooth" });
 
       setSimilarProducts(filtered);
       setLoading2(false);
@@ -70,18 +71,18 @@ const Product = () => {
   const ShowProduct = () => {
     return (
       <>
-        <div className="container my-5 py-2">
+        <div className="container my-2 py-2">
           <div className="row">
-            <div className="col-md-6 col-sm-12 py-3">
+            <div className="col-md-5 col-sm-12 py-3"  style={{textAlign:'center',alignSelf:'center'}}>
               <img
                 className="img-fluid"
                 src={product.image}
                 alt={product.title}
-                width="400px"
-                height="400px"
+                width="250px"
+                height="250px"
               />
             </div>
-            <div className="col-md-6 col-md-6 py-5">
+            <div className="col-md-5 col-md-6 py-5">
               <h4 className="text-uppercase text-muted">{product.category}</h4>
               <h1 className="display-5">{product.title}</h1>
               <p className="lead">
@@ -138,11 +139,12 @@ const Product = () => {
               return (
                 <div key={item._id} className="card mx-4 text-center">
                   <img
+                 
                     className="card-img-top p-3"
                     src={item.image}
                     alt="Card"
-                    height={300}
-                    width={300}
+                    height={150}
+                    width={150}
                   />
                   <div className="card-body">
                     <h5 className="card-title">

@@ -1,6 +1,10 @@
-import React from 'react'
+import React from "react";
 import { Footer, Navbar } from "../components";
+
 const AboutPage = () => {
+ 
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
   return (
     <>
       <Navbar />

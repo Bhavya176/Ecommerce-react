@@ -9,6 +9,8 @@ const ContactPage = () => {
     message: "",
   });
   const [error, setError] = useState("");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

@@ -7,6 +7,7 @@ import "../style/ChatPage.css";
 import { useNavigate } from "react-router-dom";
 import { AiTwotoneAudio } from "react-icons/ai";
 import { MdSend } from "react-icons/md";
+
 const ENDPOINT = process.env.REACT_APP_CLIENT_URL;
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
