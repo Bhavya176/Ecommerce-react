@@ -103,9 +103,9 @@ const ChatPage = () => {
   const filteredMessages = selectedUser
     ? messages.filter((msg) => {
         const senderId =
-          msg.sender._id === undefined ? msg.sender : msg.sender._id;
+          msg.sender?._id === undefined ? msg.sender : msg.sender?._id;
         const receiverId =
-          msg.sender._id === undefined ? msg.receiver : msg.receiver._id;
+          msg.sender?._id === undefined ? msg.receiver : msg.receiver?._id;
         return (
           (senderId === selectedUser._id && receiverId === userData.id) ||
           (senderId === userData.id && receiverId === selectedUser._id)

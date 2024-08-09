@@ -7,9 +7,17 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
       <div className="container py-0">
-        <NavLink className="navbar-brand fw-bold fs-4 px-2" to="/">
+        <NavLink
+          className="fw-bold fs-4 px-2"
+          to="/"
+          style={{
+            fontFamily: "cursive",
+            color: "white",
+            textDecorationLine: "none",
+          }}
+        >
           {" "}
-          React Ecommerce
+          Universal Cart
         </NavLink>
         <button
           className="navbar-toggler mx-2"

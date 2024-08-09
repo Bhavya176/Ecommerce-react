@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Footer, Navbar } from "../components";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 import { useSelector } from "react-redux";
+
 const AddProductPage = () => {
   const userData = useSelector((state) => state.userReducer.userInfo);
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const AddProductPage = () => {
   const [productinfo, setProductinfo] = useState({
     title: "",
     category: "",
-    price: undefined,
+    price: "",
     description: "",
     image: "",
     rating: {
@@ -21,6 +21,7 @@ const AddProductPage = () => {
     },
   });
   const [error, setError] = useState("");
+
   const validateForm = () => {
     // Define validation rules
     const validations = {
@@ -185,6 +186,7 @@ const AddProductPage = () => {
       navigate("*");
     }
   }, [userData, navigate]);
+
   return (
     <>
       <Navbar />
@@ -198,15 +200,15 @@ const AddProductPage = () => {
                 <div className="form my-3">
                   <label htmlFor="title">Title</label>
                   <input
-                    type="title"
+                    type="text" // Change type from 'title' to 'text'
                     className="form-control"
                     id="title"
                     placeholder="Enter product title"
-                    value={productinfo.title} // Use productinfo.username as value
+                    value={productinfo.title}
                     onChange={(e) =>
                       setProductinfo((prevState) => ({
-                        ...prevState, // Spread previous state
-                        title: e.target.value, // Update username field
+                        ...prevState,
+                        title: e.target.value,
                       }))
                     }
                   />
@@ -214,15 +216,15 @@ const AddProductPage = () => {
                 <div className="form my-3">
                   <label htmlFor="Price">Price</label>
                   <input
-                    type="price"
+                    type="number" // Change type from 'price' to 'number'
                     className="form-control"
                     id="Price"
                     placeholder="Enter product price"
-                    value={productinfo.price} // Use productinfo.username as value
+                    value={productinfo.price}
                     onChange={(e) =>
                       setProductinfo((prevState) => ({
-                        ...prevState, // Spread previous state
-                        price: e.target.value, // Update username field
+                        ...prevState,
+                        price: e.target.value,
                       }))
                     }
                   />
@@ -232,16 +234,16 @@ const AddProductPage = () => {
                   <select
                     className="form-control"
                     id="category"
-                    value={productinfo.category} // Use productinfo.category as value
+                    value={productinfo.category}
                     onChange={(e) =>
                       setProductinfo((prevState) => ({
-                        ...prevState, // Spread previous state
-                        category: e.target.value, // Update category field
+                        ...prevState,
+                        category: e.target.value,
                       }))
                     }
                   >
                     <option value="">Select category</option>
-                    <option value="men's clothing">Mens's Clothing</option>
+                    <option value="men's clothing">Men's Clothing</option>
                     <option value="women's clothing">Women's Clothing</option>
                     <option value="jewelery">Jewelery</option>
                     <option value="electronics">Electronics</option>
@@ -250,17 +252,17 @@ const AddProductPage = () => {
                 </div>
 
                 <div className="form my-3">
-                  <label htmlFor="category">Image URL</label>
+                  <label htmlFor="image">Image URL</label>
                   <input
-                    type="category"
+                    type="text" // Change type from 'category' to 'text'
                     className="form-control"
-                    id="category"
+                    id="image"
                     placeholder="Enter product image url"
-                    value={productinfo.image} // Use productinfo.username as value
+                    value={productinfo.image}
                     onChange={(e) =>
                       setProductinfo((prevState) => ({
-                        ...prevState, // Spread previous state
-                        image: e.target.value, // Update username field
+                        ...prevState,
+                        image: e.target.value,
                       }))
                     }
                   />
@@ -268,17 +270,17 @@ const AddProductPage = () => {
                 <div className="form my-3">
                   <label htmlFor="rate">Rate</label>
                   <input
-                    type="rate"
+                    type="number" // Change type from 'rate' to 'number'
                     className="form-control"
                     id="rate"
                     placeholder="Enter product rate"
-                    value={productinfo.rating.rate} // Use productinfo.username as value
+                    value={productinfo.rating.rate}
                     onChange={(e) =>
                       setProductinfo((prevState) => ({
-                        ...prevState, // Spread previous state
+                        ...prevState,
                         rating: {
-                          ...prevState.rating, // Spread previous rating object
-                          rate: e.target.value, // Update rate field within rating object
+                          ...prevState.rating,
+                          rate: e.target.value,
                         },
                       }))
                     }
@@ -287,44 +289,51 @@ const AddProductPage = () => {
                 <div className="form my-3">
                   <label htmlFor="count">Count</label>
                   <input
-                    type="count"
+                    type="number" // Change type from 'count' to 'number'
                     className="form-control"
                     id="count"
                     placeholder="Enter product count"
-                    value={productinfo.rating.count} // Use productinfo.username as value
+                    value={productinfo.rating.count}
                     onChange={(e) =>
                       setProductinfo((prevState) => ({
-                        ...prevState, // Spread previous state
+                        ...prevState,
                         rating: {
-                          ...prevState.rating, // Spread previous rating object
-                          count: e.target.value, // Update rate field within rating object
+                          ...prevState.rating,
+                          count: e.target.value,
                         },
                       }))
                     }
                   />
                 </div>
-                <div className="form  my-3">
+                <div className="form my-3">
                   <label htmlFor="description">Description</label>
                   <textarea
                     rows={5}
                     className="form-control"
                     id="description"
                     placeholder="Enter product description"
-                    value={productinfo.description} // Use productinfo.username as value
+                    value={productinfo.description}
                     onChange={(e) =>
                       setProductinfo((prevState) => ({
-                        ...prevState, // Spread previous state
-                        description: e.target.value, // Update username field
+                        ...prevState,
+                        description: e.target.value,
                       }))
                     }
                   />
                 </div>
-                <div className="text-center">
+                <div className="d-flex justify-content-evenly">
                   <button
                     className="my-2 px-4 mx-auto btn btn-dark"
                     type="submit"
                   >
-                    Send
+                    Add
+                  </button>
+                  <button
+                    className="my-2 px-4 mx-auto btn btn-dark"
+                    type="button" // Change type from 'Cancel' to 'button'
+                    onClick={() => navigate(-1)} // Navigate back
+                  >
+                    Cancel
                   </button>
                 </div>
               </form>
