@@ -18,7 +18,6 @@ const Register = () => {
     e.preventDefault();
     try {
       const URL = `${process.env.REACT_APP_CLIENT_URL}users/register`;
-
       const formData = new FormData();
       formData.append("username", userInfo.username);
       formData.append("email", userInfo.email);

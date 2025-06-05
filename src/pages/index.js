@@ -10,3 +10,6 @@ export { default as Register } from "./Register";
 export { default as Checkout } from "./Checkout";
 export { default as PageNotFound } from "./PageNotFound";
 export { default as ChatPage } from "./ChatPage";
+export { default as Profile } from "./Profile";
+export { default as TicToeGame } from "./TicToeGame";
+

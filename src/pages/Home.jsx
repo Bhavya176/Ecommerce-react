@@ -4,7 +4,7 @@ import groovyWalkAnimation from "./../Animation.json";
 import "./Home.css";
 import { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
-
+import { Helmet } from "react-helmet";
 function Home() {
   const [showBanner, setShowBanner] = useState(false);
 
@@ -31,6 +31,12 @@ function Home() {
   return (
     <>
       <Navbar />
+      <Helmet>
+        <title>Home Page</title>
+        <meta name="description" content="Welcome to the Home Page" />
+        <meta name="keywords" content="home, react, app" />
+        <meta name="author" content="Bhavya Savaliya" />
+      </Helmet>
       <div
         style={{
           background: "linear-gradient(#3f87a6, #ebf8e1, #f69d3c)",

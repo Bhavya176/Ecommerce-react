@@ -125,7 +125,10 @@ const ChatPage = () => {
       <Navbar />
       {isAdmin === true ? (
         <div className="container  py-3">
-          <h1 className="text-center">Chat</h1>
+          <h1 className="text-center">
+            Customer
+            {userData.role === "admin" ? " Feedback" : " Support"}
+          </h1>
           <hr />
 
           <div className="chat-container">

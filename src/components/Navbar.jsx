@@ -58,6 +58,16 @@ const Navbar = () => {
                 Chat
               </NavLink>
             </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/TicToeGame">
+                TicToeGame
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/profile">
+                Profile
+              </NavLink>
+            </li>
           </ul>
           <div className="buttons text-center">
             <NavLink

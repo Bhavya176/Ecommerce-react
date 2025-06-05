@@ -19,6 +19,8 @@ import {
   PageNotFound,
   AddProductPage,
   ChatPage,
+  Profile,
+  TicToeGame,
 } from "./pages";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -37,6 +39,9 @@ root.render(
           <Route path="/addProduct" element={<AddProductPage />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/chat" element={<ChatPage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/TicToeGame" element={<TicToeGame />} />
+
           <Route path="*" element={<PageNotFound />} />
           <Route path="/product/*" element={<PageNotFound />} />
         </Routes>
