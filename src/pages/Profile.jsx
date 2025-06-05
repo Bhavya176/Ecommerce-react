@@ -40,7 +40,7 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const URL = `${process.env.REACT_APP_LOCAL_URL}users/usersID/${userData.id}`;
+      const URL = `${process.env.REACT_APP_CLIENT_URL}users/usersID/${userData.id}`;
       const formData = new FormData();
       formData.append("username", userInfo.username);
       formData.append("email", userInfo.email);

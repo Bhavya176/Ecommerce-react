@@ -22,7 +22,7 @@ const Login = () => {
     const fetchUserProfile = async () => {
       try {
         const response = await Axios.get(
-          `${process.env.REACT_APP_LOCAL_URL}users/userProfile/${userData.id}`
+          `${process.env.REACT_APP_CLIENT_URL}users/userProfile/${userData.id}`
         );
         setUserInfo({
           username: response.data?.username,
