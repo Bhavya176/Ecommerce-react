@@ -1,8 +1,7 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 import { Footer, Navbar } from "../components";
-import { Buffer } from "buffer";
 import { addUser, deleteAllItemsFromCart } from "../redux/action";
 import { useDispatch, useSelector } from "react-redux";
 const Login = () => {
@@ -13,7 +12,7 @@ const Login = () => {
     username: "",
     email: "",
     password: "",
-    image: null, // New state for image
+    imgUrl: null, // New state for image
   });
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.userReducer.userInfo);
@@ -28,17 +27,16 @@ const Login = () => {
           username: response.data?.username,
           email: response.data?.email,
           password: "",
-          image: response.data?.img, // New state for image
+          imgUrl: response.data?.imgUrl, // New state for image
         });
       } catch (error) {
         setError("Failed to load user profile");
         console.error(error);
       }
     };
-if (userData) {
-  
-  fetchUserProfile();
-}
+    if (userData) {
+      fetchUserProfile();
+    }
   }, [userData]);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,13 +78,9 @@ if (userData) {
           <div className="col-md-6 offset-md-3 col-lg-4 offset-lg-4 col-sm-8 offset-sm-2">
             {userData ? (
               <div className="text-center">
-                {userInfo?.image && (
+                {userInfo?.imgUrl && (
                   <img
-                    src={`data:${
-                      userInfo?.image.contentType
-                    };base64,${Buffer.from(userInfo?.image.data).toString(
-                      "base64"
-                    )}`} // Render image
+                    src={`${userInfo.imgUrl}`} // Render image
                     alt="Profile"
                     className="rounded-circle mb-3"
                     style={{ width: "200px", height: "200px" }}

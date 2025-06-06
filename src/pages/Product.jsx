@@ -73,7 +73,10 @@ const Product = () => {
       <>
         <div className="container my-2 py-2">
           <div className="row">
-            <div className="col-md-5 col-sm-12 py-3"  style={{textAlign:'center',alignSelf:'center'}}>
+            <div
+              className="col-md-5 col-sm-12 py-3"
+              style={{ textAlign: "center", alignSelf: "center" }}
+            >
               <img
                 className="img-fluid"
                 src={product.image}
@@ -139,7 +142,6 @@ const Product = () => {
               return (
                 <div key={item._id} className="card mx-4 text-center">
                   <img
-                 
                     className="card-img-top p-3"
                     src={item.image}
                     alt="Card"

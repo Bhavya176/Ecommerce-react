@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { Footer, Navbar } from "../components";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
-import { Buffer } from "buffer";
 import { FaPen } from "react-icons/fa"; // Importing the Edit icon from React Icons
 
 const Profile = () => {
@@ -14,7 +13,7 @@ const Profile = () => {
     username: "",
     email: "",
     password: "",
-    image: null, // New state for image
+    imgUrl: null, // New state for image
   });
   const [error, setError] = useState("");
   useEffect(() => {
@@ -27,7 +26,7 @@ const Profile = () => {
           username: response.data?.username,
           email: response.data?.email,
           password: "",
-          image: response.data?.img, // New state for image
+          imgUrl: response.data?.imgUrl, // New state for image
         });
       } catch (error) {
         setError("Failed to load user profile");
@@ -37,27 +36,48 @@ const Profile = () => {
 
     fetchUserProfile();
   }, [userData]);
+  const handleImageUpload = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append(
+      "upload_preset",
+      process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
+    );
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    const data = await res.json();
+    console.log("data", data);
+    return data.secure_url;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const URL = `${process.env.REACT_APP_CLIENT_URL}users/usersID/${userData.id}`;
-      const formData = new FormData();
-      formData.append("username", userInfo.username);
-      formData.append("email", userInfo.email);
-      formData.append("password", userInfo.password);
-      if (userInfo.image) {
-        formData.append("image", userInfo.image); // Append image to FormData
-      }
 
-      const response = await Axios.put(
-        URL,
-        formData, // Use FormData instead of userInfo
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Set Content-Type for FormData
-          },
-        }
-      );
+      let imgUrl = null;
+      if (userInfo.imgUrl) {
+        imgUrl = await handleImageUpload(userInfo.imgUrl); // Upload image first
+      }
+      console.log("imgUrl", imgUrl);
+      const payload = {
+        username: userInfo.username,
+        email: userInfo.email,
+        password: userInfo.password,
+        imgUrl, // Send only the URL
+      };
+
+      const response = await Axios.put(URL, payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       alert(response.data.message);
       setError("");
@@ -65,22 +85,18 @@ const Profile = () => {
         username: "",
         email: "",
         password: "",
-        image: null, // Reset image state after successful registration
+        image: null,
       });
       navigate("/login");
     } catch (error) {
-      if (error.response === undefined) {
-        setError(error.message);
-      } else {
-        setError(error.response.data.message);
-      }
+      setError(error.response?.data?.message || error.message);
     }
   };
 
   const handleImageChange = (e) => {
     setUserInfo((prevState) => ({
       ...prevState,
-      image: e.target.files[0], // Set image state when user selects a file
+      imgUrl: e.target.files[0], // Set image state when user selects a file
     }));
   };
   useEffect(() => {
@@ -101,16 +117,12 @@ const Profile = () => {
             <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
               <form onSubmit={handleSubmit}>
                 <div className="d-flex justify-content-center position-relative mb-3">
-                  {userInfo.image ? (
+                  {userInfo.imgUrl ? (
                     <img
                       src={
-                        userInfo.image instanceof Blob
-                          ? URL.createObjectURL(userInfo.image)
-                          : `data:${
-                              userInfo?.image.contentType
-                            };base64,${Buffer.from(
-                              userInfo?.image.data
-                            ).toString("base64")}`
+                        userInfo.imgUrl instanceof Blob
+                          ? URL.createObjectURL(userInfo.imgUrl)
+                          : `${userInfo?.imgUrl}`
                       }
                       alt="Profile"
                       className="rounded-circle border border-2 border-dark img-fluid"
