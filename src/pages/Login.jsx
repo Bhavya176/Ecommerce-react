@@ -35,8 +35,10 @@ const Login = () => {
         console.error(error);
       }
     };
-
-    fetchUserProfile();
+if (userData) {
+  
+  fetchUserProfile();
+}
   }, [userData]);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,7 +78,7 @@ const Login = () => {
         <hr />
         <div className="row my-4 h-100">
           <div className="col-md-6 offset-md-3 col-lg-4 offset-lg-4 col-sm-8 offset-sm-2">
-            {userInfo ? (
+            {userData ? (
               <div className="text-center">
                 {userInfo?.image && (
                   <img

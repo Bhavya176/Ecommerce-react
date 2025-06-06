@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Footer, Navbar } from "../components";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import { Buffer } from "buffer";
 import { FaPen } from "react-icons/fa"; // Importing the Edit icon from React Icons
@@ -21,7 +21,7 @@ const Profile = () => {
     const fetchUserProfile = async () => {
       try {
         const response = await Axios.get(
-          `${process.env.REACT_APP_LOCAL_URL}users/userProfile/${userData.id}`
+          `${process.env.REACT_APP_CLIENT_URL}users/userProfile/${userData.id}`
         );
         setUserInfo({
           username: response.data?.username,
