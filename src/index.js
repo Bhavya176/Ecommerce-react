@@ -21,6 +21,7 @@ import {
   ChatPage,
   Profile,
   TicToeGame,
+  VideoChat
 } from "./pages";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -41,6 +42,7 @@ root.render(
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/TicToeGame" element={<TicToeGame />} />
+          <Route path="/videoChat" element={<VideoChat />} />
 
           <Route path="*" element={<PageNotFound />} />
           <Route path="/product/*" element={<PageNotFound />} />

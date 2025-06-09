@@ -151,7 +151,7 @@ const AddProductPage = () => {
     }
 
     try {
-      const URL = process.env.REACT_APP_CLIENT_URL + "products";
+      const URL = process.env.REACT_APP_LOCAL_URL + "products";
       const response = await Axios.post(URL, productinfo);
       alert(response.data.message);
 

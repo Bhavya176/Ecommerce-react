@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { AiTwotoneAudio } from "react-icons/ai";
 import { MdSend } from "react-icons/md";
 
-const ENDPOINT = process.env.REACT_APP_CLIENT_URL;
+const ENDPOINT = process.env.REACT_APP_LOCAL_URL;
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
@@ -50,11 +50,19 @@ const ChatPage = () => {
 
   const getData = async () => {
     try {
-      const usersResponse = await Axios.get(`${ENDPOINT}users/getUser`);
+      const usersResponse = await Axios.get(`${ENDPOINT}users/getUser`,{
+        headers: {
+          Authorization: `Bearer ${userData.accessToken}`,
+        },
+      });
       const usersData = usersResponse.data.data;
       setUsers(usersData);
 
-      const adminsResponse = await Axios.get(`${ENDPOINT}users/getAdmin`);
+      const adminsResponse = await Axios.get(`${ENDPOINT}users/getAdmin`,{
+        headers: {
+          Authorization: `Bearer ${userData.accessToken}`,
+        },
+      });
       const adminsData = adminsResponse.data.data;
       setAdmins(adminsData);
     } catch (error) {

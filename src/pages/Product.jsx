@@ -23,14 +23,14 @@ const Product = () => {
     const getProduct = async () => {
       setLoading(true);
       setLoading2(true);
-      const URL = process.env.REACT_APP_CLIENT_URL + "products/" + id;
+      const URL = process.env.REACT_APP_LOCAL_URL + "products/" + id;
 
       const response = await fetch(URL);
       const data = await response.json();
 
       setProduct(data.data);
       setLoading(false);
-      const URLBASE = process.env.REACT_APP_CLIENT_URL + "products";
+      const URLBASE = process.env.REACT_APP_LOCAL_URL + "products";
 
       const response2 = await fetch(URLBASE);
       const data2 = await response2.json();

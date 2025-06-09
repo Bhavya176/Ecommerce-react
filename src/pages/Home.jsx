@@ -5,6 +5,8 @@ import "./Home.css";
 import { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { Helmet } from "react-helmet";
+
+
 function Home() {
   const [showBanner, setShowBanner] = useState(false);
 

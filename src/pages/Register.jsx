@@ -36,7 +36,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const URL = `${process.env.REACT_APP_CLIENT_URL}users/register`;
+      const URL = `${process.env.REACT_APP_LOCAL_URL}users/register`;
 
       let imgUrl = null;
 
@@ -52,14 +52,14 @@ const Register = () => {
         password: userInfo.password,
         imgUrl,
       };
-     
+
       const response = await Axios.post(URL, payload, {
         headers: {
           "Content-Type": "application/json", // sending JSON, not FormData
         },
       });
-      
-      handleLogout()
+
+      handleLogout();
       alert(response.data.message);
       setError("");
       setUserInfo({

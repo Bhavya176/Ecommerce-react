@@ -16,13 +16,17 @@ const Login = () => {
   });
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.userReducer.userInfo);
+
   // Check if user info exists in localStorage on component mount
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await Axios.get(
-          `${process.env.REACT_APP_CLIENT_URL}users/userProfile/${userData.id}`
-        );
+        const URL = `${process.env.REACT_APP_LOCAL_URL}users/userProfile/${userData.id}`
+        const response = await Axios.get(URL, {
+          headers: {
+            Authorization: `Bearer ${userData.accessToken}`,  // Add the token to the Authorization header
+          },
+        });
         setUserInfo({
           username: response.data?.username,
           email: response.data?.email,
@@ -41,13 +45,16 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const URL = `${process.env.REACT_APP_CLIENT_URL}users/login`;
+      const URL = `${process.env.REACT_APP_LOCAL_URL}users/login`;
 
       const response = await Axios.post(URL, {
         email,
         password,
       });
-      const userData = response.data.userInfo;
+      const userData = {
+        ...response.data.userInfo, // Spread the userInfo object
+        accessToken: response.data.accessToken, // Add accessToken to userData
+      };
       dispatch(addUser(userData));
       alert(response.data.message);
       setError("");

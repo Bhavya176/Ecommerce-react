@@ -12,21 +12,30 @@ const Profile = () => {
   const [userInfo, setUserInfo] = useState({
     username: "",
     email: "",
-    password: "",
-    imgUrl: null, // New state for image
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+    imgUrl: null,
   });
   const [error, setError] = useState("");
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await Axios.get(
-          `${process.env.REACT_APP_CLIENT_URL}users/userProfile/${userData.id}`
-        );
+        const URL = `${process.env.REACT_APP_LOCAL_URL}users/userProfile/${userData.id}`;
+        const response = await Axios.get(URL, {
+          headers: {
+            Authorization: `Bearer ${userData.accessToken}`,
+          },
+        });
         setUserInfo({
           username: response.data?.username,
           email: response.data?.email,
-          password: "",
-          imgUrl: response.data?.imgUrl, // New state for image
+          oldPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+          
+          imgUrl: response.data?.imgUrl,
         });
       } catch (error) {
         setError("Failed to load user profile");
@@ -36,6 +45,7 @@ const Profile = () => {
 
     fetchUserProfile();
   }, [userData]);
+
   const handleImageUpload = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -52,30 +62,45 @@ const Profile = () => {
       }
     );
     const data = await res.json();
-    console.log("data", data);
     return data.secure_url;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const URL = `${process.env.REACT_APP_CLIENT_URL}users/usersID/${userData.id}`;
 
-      let imgUrl = null;
-      if (userInfo.imgUrl) {
+    // Validation for password match (you can add more validations here)
+    if (userInfo.newPassword !== userInfo.confirmPassword) {
+      setError("New password and confirm password do not match.");
+      return;
+    }
+if(userInfo.newPassword){
+  if (userInfo.newPassword.length < 6) {
+    setError("New password must be at least 6 characters.");
+    return;
+  }
+}
+
+    try {
+      const URL = `${process.env.REACT_APP_LOCAL_URL}users/usersID/${userData.id}`;
+
+      let imgUrl = userInfo.imgUrl; // Default image URL is the current one (no update needed)
+
+      // Upload image if the user has selected a new image
+      if (userInfo.imgUrl instanceof File) {
         imgUrl = await handleImageUpload(userInfo.imgUrl); // Upload image first
       }
-      console.log("imgUrl", imgUrl);
+
       const payload = {
         username: userInfo.username,
         email: userInfo.email,
-        password: userInfo.password,
+        oldPassword: userInfo.oldPassword, // New password
+        newPassword: userInfo.newPassword, // New password
         imgUrl, // Send only the URL
       };
 
       const response = await Axios.put(URL, payload, {
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${userData.accessToken}`,
         },
       });
 
@@ -84,7 +109,9 @@ const Profile = () => {
       setUserInfo({
         username: "",
         email: "",
-        password: "",
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
         image: null,
       });
       navigate("/login");
@@ -96,7 +123,7 @@ const Profile = () => {
   const handleImageChange = (e) => {
     setUserInfo((prevState) => ({
       ...prevState,
-      imgUrl: e.target.files[0], // Set image state when user selects a file
+      imgUrl: e.target.files[0], // Save the image file for upload
     }));
   };
   useEffect(() => {
@@ -117,6 +144,7 @@ const Profile = () => {
             <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
               <form onSubmit={handleSubmit}>
                 <div className="d-flex justify-content-center position-relative mb-3">
+                  {console.log("userInfo.imgUrl",userInfo.imgUrl)}
                   {userInfo.imgUrl ? (
                     <img
                       src={
@@ -126,7 +154,6 @@ const Profile = () => {
                       }
                       alt="Profile"
                       className="rounded-circle border border-2 border-dark img-fluid"
-                      // className="rounded-circle"
                       style={{ width: "200px", height: "200px" }}
                     />
                   ) : (
@@ -191,18 +218,52 @@ const Profile = () => {
                   />
                 </div>
 
-                <div className="form  my-3">
-                  <label htmlFor="Password">Password</label>
+                <div className="form my-3">
+                  <label htmlFor="OldPassword">Old Password</label>
                   <input
                     type="password"
                     className="form-control"
-                    id="password"
-                    placeholder="Password"
-                    value={userInfo.password}
+                    id="oldPassword"
+                    placeholder="Enter your old password"
+                    value={userInfo.oldPassword}
                     onChange={(e) =>
                       setUserInfo((prevState) => ({
                         ...prevState,
-                        password: e.target.value,
+                        oldPassword: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="form my-3">
+                  <label htmlFor="NewPassword">New Password</label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    id="newPassword"
+                    placeholder="Enter a new password"
+                    value={userInfo.newPassword}
+                    onChange={(e) =>
+                      setUserInfo((prevState) => ({
+                        ...prevState,
+                        newPassword: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="form my-3">
+                  <label htmlFor="ConfirmPassword">Confirm New Password</label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    id="confirmPassword"
+                    placeholder="Confirm your new password"
+                    value={userInfo.confirmPassword}
+                    onChange={(e) =>
+                      setUserInfo((prevState) => ({
+                        ...prevState,
+                        confirmPassword: e.target.value,
                       }))
                     }
                   />

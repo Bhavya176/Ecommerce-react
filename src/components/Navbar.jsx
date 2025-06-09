@@ -59,6 +59,11 @@ const Navbar = () => {
               </NavLink>
             </li>
             <li className="nav-item">
+              <NavLink className="nav-link" to="/videoChat">
+                VideoChat
+              </NavLink>
+            </li>
+            <li className="nav-item">
               <NavLink className="nav-link" to="/TicToeGame">
                 TicToeGame
               </NavLink>
