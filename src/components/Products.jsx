@@ -50,7 +50,7 @@ const Products = () => {
   const getProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const URL = `${process.env.REACT_APP_LOCAL_URL}products`;
+      const URL = `${process.env.REACT_APP_CLIENT_URL}products`;
       const response = await Axios.get(URL);
       const fetchedData = response.data.data;
       setData(fetchedData);
@@ -69,7 +69,7 @@ const Products = () => {
 
   const handleDelete = async (id) => {
     try {
-      const URL = `${process.env.REACT_APP_LOCAL_URL}products/${id}`;
+      const URL = `${process.env.REACT_APP_CLIENT_URL}products/${id}`;
       await Axios.delete(URL);
       getProducts();
     } catch (error) {

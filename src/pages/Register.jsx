@@ -36,7 +36,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const URL = `${process.env.REACT_APP_LOCAL_URL}users/register`;
+      const URL = `${process.env.REACT_APP_CLIENT_URL}users/register`;
 
       let imgUrl = null;
 

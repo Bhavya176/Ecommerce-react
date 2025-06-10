@@ -21,10 +21,10 @@ const Login = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const URL = `${process.env.REACT_APP_LOCAL_URL}users/userProfile/${userData.id}`
+        const URL = `${process.env.REACT_APP_CLIENT_URL}users/userProfile/${userData.id}`;
         const response = await Axios.get(URL, {
           headers: {
-            Authorization: `Bearer ${userData.accessToken}`,  // Add the token to the Authorization header
+            Authorization: `Bearer ${userData.accessToken}`, // Add the token to the Authorization header
           },
         });
         setUserInfo({
@@ -45,7 +45,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const URL = `${process.env.REACT_APP_LOCAL_URL}users/login`;
+      const URL = `${process.env.REACT_APP_CLIENT_URL}users/login`;
 
       const response = await Axios.post(URL, {
         email,

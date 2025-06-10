@@ -28,7 +28,7 @@ const Cart = () => {
       const headers = {
         "Content-Type": "application/json",
       };
-      const URL = `${process.env.REACT_APP_LOCAL_URL}api/create-checkout-session`;
+      const URL = `${process.env.REACT_APP_CLIENT_URL}api/create-checkout-session`;
 
       const response = await fetch(URL, {
         method: "POST",

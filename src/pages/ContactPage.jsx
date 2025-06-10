@@ -14,7 +14,7 @@ const ContactPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const URL = process.env.REACT_APP_LOCAL_URL;
+      const URL = process.env.REACT_APP_CLIENT_URL;
 
       const response = await Axios.post(URL, userInfo);
 

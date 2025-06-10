@@ -22,7 +22,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const URL = `${process.env.REACT_APP_LOCAL_URL}users/userProfile/${userData.id}`;
+        const URL = `${process.env.REACT_APP_CLIENT_URL}users/userProfile/${userData.id}`;
         const response = await Axios.get(URL, {
           headers: {
             Authorization: `Bearer ${userData.accessToken}`,
@@ -34,7 +34,7 @@ const Profile = () => {
           oldPassword: "",
           newPassword: "",
           confirmPassword: "",
-          
+
           imgUrl: response.data?.imgUrl,
         });
       } catch (error) {
@@ -73,15 +73,15 @@ const Profile = () => {
       setError("New password and confirm password do not match.");
       return;
     }
-if(userInfo.newPassword){
-  if (userInfo.newPassword.length < 6) {
-    setError("New password must be at least 6 characters.");
-    return;
-  }
-}
+    if (userInfo.newPassword) {
+      if (userInfo.newPassword.length < 6) {
+        setError("New password must be at least 6 characters.");
+        return;
+      }
+    }
 
     try {
-      const URL = `${process.env.REACT_APP_LOCAL_URL}users/usersID/${userData.id}`;
+      const URL = `${process.env.REACT_APP_CLIENT_URL}users/usersID/${userData.id}`;
 
       let imgUrl = userInfo.imgUrl; // Default image URL is the current one (no update needed)
 
@@ -144,7 +144,7 @@ if(userInfo.newPassword){
             <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
               <form onSubmit={handleSubmit}>
                 <div className="d-flex justify-content-center position-relative mb-3">
-                  {console.log("userInfo.imgUrl",userInfo.imgUrl)}
+                  {console.log("userInfo.imgUrl", userInfo.imgUrl)}
                   {userInfo.imgUrl ? (
                     <img
                       src={
