@@ -7,6 +7,10 @@ import "../style/ChatPage.css";
 import { useNavigate } from "react-router-dom";
 import { AiTwotoneAudio } from "react-icons/ai";
 import { MdSend } from "react-icons/md";
+import { toast, ToastContainer } from "react-toastify";
+import { AiOutlineMessage } from "react-icons/ai";
+import notification from "../assets/notification.mp3";
+
 
 const ENDPOINT = process.env.REACT_APP_CLIENT_URL;
 const SpeechRecognition =
@@ -14,6 +18,7 @@ const SpeechRecognition =
 const recognition = new SpeechRecognition();
 var current, transcript, upperCase;
 const ChatPage = () => {
+  const notificationSound = useRef(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [selectedUser, setSelectedUser] = useState(null); // User selected for chat
@@ -40,6 +45,15 @@ const ChatPage = () => {
     });
 
     socketRef.current.on("receive message", (message) => {
+      if (userData.id != message.sender) {   
+        if (notificationSound.current) {
+          notificationSound.current.play();
+        }
+  
+        toast.info(`${message.content}`, {
+          icon: <AiOutlineMessage className="notification-message" size={30} />,
+        });
+      }
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -199,6 +213,18 @@ const ChatPage = () => {
       ) : (
         <></>
       )}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        toastClassName="custom-toast"
+      />
+        <audio src={notification} ref={notificationSound} />
       <Footer />
     </>
   );
