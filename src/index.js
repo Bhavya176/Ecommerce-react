@@ -9,6 +9,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import GoogleAnalytics from "../src/pages/GoogleAnalytics";
+import { Analytics } from "@vercel/analytics/react";
 import {
   Home,
   Product,
@@ -30,6 +31,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <GoogleAnalytics />
+    <Analytics />
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <Routes>
