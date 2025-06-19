@@ -4,8 +4,8 @@ import { Link, useParams } from "react-router-dom";
 import Marquee from "react-fast-marquee";
 import { useDispatch } from "react-redux";
 import { addCart } from "../redux/action";
-
 import { Footer, Navbar } from "../components";
+import ReactGA from "react-ga4";
 
 const Product = () => {
   const { id } = useParams();
@@ -17,6 +17,30 @@ const Product = () => {
 
   const addProduct = (product) => {
     dispatch(addCart(product));
+    // Track the "Add to Cart" event
+    ReactGA.event({
+      category: "E-commerce",
+      action: "Add to Cart",
+      label: product.title, // You can label with the product title or ID
+    });
+  };
+
+  const handleGoToCartClick = () => {
+    // Track the "Go to Cart" event
+    ReactGA.event({
+      category: "E-commerce",
+      action: "Go to Cart",
+      label: "User clicked on Go to Cart",
+    });
+  };
+
+  const handleBuyNowClick = (item) => {
+    // Track the "Buy Now" event for similar products
+    ReactGA.event({
+      category: "E-commerce",
+      action: "Buy Now",
+      label: item.title, // You can label with the product title or ID
+    });
   };
 
   useEffect(() => {
@@ -100,7 +124,11 @@ const Product = () => {
               >
                 Add to Cart
               </button>
-              <Link to="/cart" className="btn btn-dark mx-3">
+              <Link
+                to="/cart"
+                className="btn btn-dark mx-3"
+                onClick={handleGoToCartClick}
+              >
                 Go to Cart
               </Link>
             </div>
@@ -153,13 +181,11 @@ const Product = () => {
                       {item.title.substring(0, 15)}...
                     </h5>
                   </div>
-                  {/* <ul className="list-group list-group-flush">
-                    <li className="list-group-item lead">${product.price}</li>
-                  </ul> */}
                   <div className="card-body">
                     <Link
                       to={"/product/" + item._id}
                       className="btn btn-dark m-1"
+                      onClick={() => handleBuyNowClick(item)}
                     >
                       Buy Now
                     </Link>
@@ -178,6 +204,7 @@ const Product = () => {
       </>
     );
   };
+
   return (
     <>
       <Navbar />

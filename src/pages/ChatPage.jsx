@@ -11,7 +11,6 @@ import { toast, ToastContainer } from "react-toastify";
 import { AiOutlineMessage } from "react-icons/ai";
 import notification from "../assets/notification.mp3";
 
-
 const ENDPOINT = process.env.REACT_APP_CLIENT_URL;
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -45,11 +44,11 @@ const ChatPage = () => {
     });
 
     socketRef.current.on("receive message", (message) => {
-      if (userData.id != message.sender) {   
+      if (userData.id !== message.sender) {
         if (notificationSound.current) {
           notificationSound.current.play();
         }
-  
+
         toast.info(`${message.content}`, {
           icon: <AiOutlineMessage className="notification-message" size={30} />,
         });
@@ -62,28 +61,28 @@ const ChatPage = () => {
     };
   }, []);
 
-  const getData = async () => {
-    try {
-      const usersResponse = await Axios.get(`${ENDPOINT}users/getUser`, {
-        headers: {
-          Authorization: `Bearer ${userData.accessToken}`,
-        },
-      });
-      const usersData = usersResponse.data.data;
-      setUsers(usersData);
-
-      const adminsResponse = await Axios.get(`${ENDPOINT}users/getAdmin`, {
-        headers: {
-          Authorization: `Bearer ${userData.accessToken}`,
-        },
-      });
-      const adminsData = adminsResponse.data.data;
-      setAdmins(adminsData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
   useEffect(() => {
+    const getData = async () => {
+      try {
+        const usersResponse = await Axios.get(`${ENDPOINT}users/getUser`, {
+          headers: {
+            Authorization: `Bearer ${userData.accessToken}`,
+          },
+        });
+        const usersData = usersResponse.data.data;
+        setUsers(usersData);
+
+        const adminsResponse = await Axios.get(`${ENDPOINT}users/getAdmin`, {
+          headers: {
+            Authorization: `Bearer ${userData.accessToken}`,
+          },
+        });
+        const adminsData = adminsResponse.data.data;
+        setAdmins(adminsData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
     getData();
   }, []);
   useEffect(() => {
@@ -224,7 +223,7 @@ const ChatPage = () => {
         draggable
         toastClassName="custom-toast"
       />
-        <audio src={notification} ref={notificationSound} />
+      <audio src={notification} ref={notificationSound} />
       <Footer />
     </>
   );
