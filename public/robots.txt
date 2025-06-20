@@ -1,3 +1,5 @@
-# https://www.robotstxt.org/robotstxt.html
+# robots.txt for Universal Cart
 User-agent: *
-Disallow:
+Allow: /
+
+Sitemap: https://universalcart.vercel.app/sitemap.xml
