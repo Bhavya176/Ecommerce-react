@@ -3,12 +3,14 @@ import { useSelector } from "react-redux";
 import { Footer, Navbar } from "../components";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
-import { FaPen } from "react-icons/fa"; // Importing the Edit icon from React Icons
+import { FaPen } from "react-icons/fa";
+import { useSpring, animated } from "@react-spring/web";
 
 const Profile = () => {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.userReducer.userInfo);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({
     username: "",
     email: "",
@@ -19,8 +21,28 @@ const Profile = () => {
   });
   const [error, setError] = useState("");
 
+  // Loader animation: fade + scale
+  const loaderAnimation = useSpring({
+    opacity: loading ? 1 : 0,
+    transform: loading ? `scale(1)` : `scale(0.8)`,
+    config: { tension: 200, friction: 20 },
+  });
+
+  // Profile Image animation: scale-up + glow shadow on imgUrl change
+  const imgAnimation = useSpring({
+    from: { transform: "scale(0.8)", boxShadow: "0px 0px 0px rgba(0,0,0,0)" },
+    to: {
+      transform: "scale(1)",
+      boxShadow: userInfo.imgUrl
+        ? "0 0 15px 5px rgba(0, 123, 255, 0.7)" // blue glow effect
+        : "0px 0px 0px rgba(0,0,0,0)",
+    },
+    config: { tension: 180, friction: 12 },
+  });
+
   useEffect(() => {
     const fetchUserProfile = async () => {
+      setLoading(true);
       try {
         const URL = `${process.env.REACT_APP_CLIENT_URL}users/userProfile/${userData.id}`;
         const response = await Axios.get(URL, {
@@ -34,12 +56,13 @@ const Profile = () => {
           oldPassword: "",
           newPassword: "",
           confirmPassword: "",
-
           imgUrl: response.data?.imgUrl,
         });
       } catch (error) {
         setError("Failed to load user profile");
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -68,34 +91,30 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation for password match (you can add more validations here)
     if (userInfo.newPassword !== userInfo.confirmPassword) {
       setError("New password and confirm password do not match.");
       return;
     }
-    if (userInfo.newPassword) {
-      if (userInfo.newPassword.length < 6) {
-        setError("New password must be at least 6 characters.");
-        return;
-      }
+    if (userInfo.newPassword && userInfo.newPassword.length < 6) {
+      setError("New password must be at least 6 characters.");
+      return;
     }
 
     try {
+      setLoading(true);
       const URL = `${process.env.REACT_APP_CLIENT_URL}users/usersID/${userData.id}`;
+      let imgUrl = userInfo.imgUrl;
 
-      let imgUrl = userInfo.imgUrl; // Default image URL is the current one (no update needed)
-
-      // Upload image if the user has selected a new image
       if (userInfo.imgUrl instanceof File) {
-        imgUrl = await handleImageUpload(userInfo.imgUrl); // Upload image first
+        imgUrl = await handleImageUpload(userInfo.imgUrl);
       }
 
       const payload = {
         username: userInfo.username,
         email: userInfo.email,
-        oldPassword: userInfo.oldPassword, // New password
-        newPassword: userInfo.newPassword, // New password
-        imgUrl, // Send only the URL
+        oldPassword: userInfo.oldPassword,
+        newPassword: userInfo.newPassword,
+        imgUrl,
       };
 
       const response = await Axios.put(URL, payload, {
@@ -112,20 +131,23 @@ const Profile = () => {
         oldPassword: "",
         newPassword: "",
         confirmPassword: "",
-        image: null,
+        imgUrl: null,
       });
       navigate("/login");
     } catch (error) {
       setError(error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleImageChange = (e) => {
     setUserInfo((prevState) => ({
       ...prevState,
-      imgUrl: e.target.files[0], // Save the image file for upload
+      imgUrl: e.target.files[0],
     }));
   };
+
   useEffect(() => {
     if (userData === null) {
       navigate("*");
@@ -133,28 +155,60 @@ const Profile = () => {
       setIsAdmin(true);
     }
   }, [userData, navigate]);
+
   return (
     <>
       <Navbar />
       {isAdmin === true ? (
-        <div className="container my-3 py-3">
+        <div className="container my-3 py-3 position-relative">
           <h1 className="text-center">Profile</h1>
           <hr />
-          <div className="row my-4 h-100">
+
+          {loading && (
+            <animated.div
+              style={{
+                ...loaderAnimation,
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transformOrigin: "center",
+                transform: loaderAnimation.transform.to(
+                  (t) => `${t} translate(-50%, -50%)`
+                ),
+                backgroundColor: "rgba(0,0,0,0.6)",
+                padding: "20px",
+                borderRadius: "10px",
+                color: "white",
+                zIndex: 1000,
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: "1.2rem",
+              }}
+            >
+              Loading...
+            </animated.div>
+          )}
+
+          <div className="row my-4 h-100" style={{ opacity: loading ? 0.5 : 1 }}>
             <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
               <form onSubmit={handleSubmit}>
                 <div className="d-flex justify-content-center position-relative mb-3">
-                  {console.log("userInfo.imgUrl", userInfo.imgUrl)}
                   {userInfo.imgUrl ? (
-                    <img
+                    <animated.img
+                      style={{
+                        ...imgAnimation,
+                        width: "200px",
+                        height: "200px",
+                        borderRadius: "50%",
+                        border: "2px solid black",
+                        objectFit: "cover",
+                      }}
                       src={
                         userInfo.imgUrl instanceof Blob
                           ? URL.createObjectURL(userInfo.imgUrl)
                           : `${userInfo?.imgUrl}`
                       }
                       alt="Profile"
-                      className="rounded-circle border border-2 border-dark img-fluid"
-                      style={{ width: "200px", height: "200px" }}
                     />
                   ) : (
                     <div
@@ -184,6 +238,7 @@ const Profile = () => {
                   </label>
                 </div>
 
+                {/* ...rest of your form inputs */}
                 <div className="form my-3">
                   <label htmlFor="Name">Full Name</label>
                   <input
@@ -198,6 +253,7 @@ const Profile = () => {
                         username: e.target.value,
                       }))
                     }
+                    disabled={loading}
                   />
                 </div>
 
@@ -215,6 +271,7 @@ const Profile = () => {
                         email: e.target.value,
                       }))
                     }
+                    disabled={loading}
                   />
                 </div>
 
@@ -232,6 +289,7 @@ const Profile = () => {
                         oldPassword: e.target.value,
                       }))
                     }
+                    disabled={loading}
                   />
                 </div>
 
@@ -249,6 +307,7 @@ const Profile = () => {
                         newPassword: e.target.value,
                       }))
                     }
+                    disabled={loading}
                   />
                 </div>
 
@@ -266,10 +325,9 @@ const Profile = () => {
                         confirmPassword: e.target.value,
                       }))
                     }
+                    disabled={loading}
                   />
                 </div>
-
-                {/* Hide image input if an image is uploaded */}
 
                 <div className="form my-3" style={{ display: "none" }}>
                   <label htmlFor="Image">Profile Image</label>
@@ -277,12 +335,17 @@ const Profile = () => {
                     type="file"
                     className="form-control"
                     id="image"
-                    onChange={handleImageChange} // Handle image change
+                    onChange={handleImageChange}
+                    disabled={loading}
                   />
                 </div>
 
                 <div className="text-center">
-                  <button className="my-2 mx-auto btn btn-dark" type="submit">
+                  <button
+                    className="my-2 mx-auto btn btn-dark"
+                    type="submit"
+                    disabled={loading}
+                  >
                     Update Profile
                   </button>
                 </div>
