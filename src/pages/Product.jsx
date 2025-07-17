@@ -101,13 +101,15 @@ const Product = () => {
               className="col-md-5 col-sm-12 py-3"
               style={{ textAlign: "center", alignSelf: "center" }}
             >
-              <img
-                className="img-fluid"
-                src={product.image}
-                alt={product.title}
-                width="250px"
-                height="250px"
-              />
+               <img
+                    className="img-fluid"
+                    src={product.image}
+                    alt={product.title}
+                    width="250"
+                    height="250"
+                    loading="lazy"
+                    style={{ objectFit: "contain", aspectRatio: "1 / 1" }}
+                  />
             </div>
             <div className="col-md-5 col-md-6 py-5">
               <h4 className="text-uppercase text-muted">{product.category}</h4>
@@ -172,10 +174,13 @@ const Product = () => {
                   <img
                     className="card-img-top p-3"
                     src={item.image}
-                    alt="Card"
-                    height={150}
-                    width={150}
+                    alt={item.title}
+                    width="150"
+                    height="150"
+                    loading="lazy"
+                    style={{ objectFit: "contain", aspectRatio: "1 / 1" }}
                   />
+
                   <div className="card-body">
                     <h5 className="card-title">
                       {item.title.substring(0, 15)}...

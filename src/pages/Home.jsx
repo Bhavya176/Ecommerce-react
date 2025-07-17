@@ -5,7 +5,7 @@ import "./Home.css";
 import { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { Helmet } from "react-helmet";
-
+import ChatbotWidget from "../components/ChatbotWidget";
 
 function Home() {
   const [showBanner, setShowBanner] = useState(false);
@@ -82,6 +82,7 @@ function Home() {
               </div>
             </div>
           )}
+          <ChatbotWidget />
           <Product />
           <Footer />
         </div>

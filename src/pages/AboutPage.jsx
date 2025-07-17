@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useMemo } from "react";
 import { Footer, Navbar } from "../components";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
@@ -12,7 +12,25 @@ const AboutPage = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
-
+  const productList = useMemo(() => [
+    {
+      title: "Men's Clothing",
+      img: "https://images.pexels.com/photos/298863/pexels-photo-298863.jpeg?auto=compress&cs=tinysrgb&w=600",
+    },
+    {
+      title: "Women's Clothing",
+      img: "https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg?auto=compress&cs=tinysrgb&w=600",
+    },
+    {
+      title: "Jewelery",
+      img: "https://images.pexels.com/photos/1927259/pexels-photo-1927259.jpeg?auto=compress&cs=tinysrgb&w=600",
+    },
+    {
+      title: "Electronics",
+      img: "https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&w=600",
+    },
+  ], []);
+  
   return (
     <>
       <Navbar />
@@ -76,24 +94,7 @@ const AboutPage = () => {
         </motion.h2>
 
         <div className="row">
-          {[
-            {
-              title: "Men's Clothing",
-              img: "https://images.pexels.com/photos/298863/pexels-photo-298863.jpeg?auto=compress&cs=tinysrgb&w=600",
-            },
-            {
-              title: "Women's Clothing",
-              img: "https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg?auto=compress&cs=tinysrgb&w=600",
-            },
-            {
-              title: "Jewelery",
-              img: "https://images.pexels.com/photos/1927259/pexels-photo-1927259.jpeg?auto=compress&cs=tinysrgb&w=600",
-            },
-            {
-              title: "Electronics",
-              img: "https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&w=600",
-            },
-          ].map(({ title, img }, i) => (
+          {productList.map(({ title, img }, i) => (
             <motion.div
               key={title}
               className="col-md-3 col-sm-6 mb-3 px-3"

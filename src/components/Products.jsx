@@ -8,7 +8,7 @@ import Axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import debounce from "lodash.debounce";
-import {  useTrail, animated } from "@react-spring/web";
+import { useTrail, animated } from "@react-spring/web";
 
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -168,10 +168,13 @@ const Products = () => {
                   <div className="card-body text-center">
                     <div style={{ height: "150px", overflow: "hidden" }}>
                       <img
+                        className="img-fluid"
                         src={product.image}
                         alt={product.title}
-                        className="img-fluid"
-                        style={{ objectFit: "contain", maxHeight: "100%" }}
+                        width="150"
+                        height="150"
+                        loading="lazy"
+                        style={{ objectFit: "contain", aspectRatio: "1 / 1" }}
                       />
                     </div>
                     <h5 className="card-title mt-3">
