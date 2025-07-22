@@ -14,6 +14,7 @@ export default function ChatbotWidget() {
   const [messages, setMessages] = useState([
     { role: "system", content: "You are a helpful assistant." },
   ]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef(null);
@@ -22,6 +23,7 @@ export default function ChatbotWidget() {
 
   const toggleWidget = () => setIsOpen(!isOpen);
   const toggleTheme = () => setDarkMode((d) => !d);
+  const toggleFullscreen = () => setIsFullscreen((prev) => !prev);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,14 +40,6 @@ export default function ChatbotWidget() {
       }, 500);
     }
   }, [isOpen, hasGreeted]);
-  console.log(
-    "REACT_APP_OPENROUTER_API_KEY",
-    process.env.REACT_APP_OPENROUTER_API_KEY
-  );
-  console.log(
-    "REACT_APP_CLOUDINARY_UPLOAD_PRESET",
-    process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
-  );
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim() || loading) return;
@@ -71,7 +65,7 @@ export default function ChatbotWidget() {
         // What is the meaning of life?
         //  today weather in rajkot
         body: JSON.stringify({
-          model: "google/gemini-2.0-flash-exp:free",
+          model: "mistralai/mistral-7b-instruct:free",
           messages: newMessages.filter((m) => m.role !== "system"),
         }),
       });
@@ -190,6 +184,13 @@ export default function ChatbotWidget() {
         <div
           style={{
             ...styles.window,
+            ...(isFullscreen && {
+              width: "95vw",
+              height: "80vh",
+              borderRadius: 0,
+              bottom: 0,
+              right: 0,
+            }),
             background: darkMode ? "#1a1a1a" : "#ffffff",
             animation: "slideInUp 0.3s ease-out",
           }}
@@ -216,6 +217,9 @@ export default function ChatbotWidget() {
                 <button onClick={toggleTheme} style={styles.themeButton}>
                   {darkMode ? "☀️" : "🌙"}
                 </button>
+                <button onClick={toggleFullscreen} style={styles.themeButton}>
+                  {isFullscreen ? "🗗" : "🗖"}
+                </button>
                 <button onClick={toggleWidget} style={styles.closeButton}>
                   ✕
                 </button>
@@ -226,6 +230,7 @@ export default function ChatbotWidget() {
           <div
             style={{
               ...styles.messages,
+              height: isFullscreen ? "calc(100vh - 140px)" : undefined,
               background: darkMode
                 ? "linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 100%)"
                 : "linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%)",
@@ -256,15 +261,15 @@ export default function ChatbotWidget() {
                           : darkMode
                           ? "#2d2d2d"
                           : "#ffffff",
-                          color:
-                          msg.role === "user"
-                            ? darkMode
-                              ? "#fff"
-                              : "#333"
-                            : darkMode
-                            ? "#e0e0e0"
-                            : "#333",
-                        
+                      color:
+                        msg.role === "user"
+                          ? darkMode
+                            ? "#fff"
+                            : "#333"
+                          : darkMode
+                          ? "#e0e0e0"
+                          : "#333",
+
                       boxShadow: darkMode
                         ? "0 4px 15px rgba(0,0,0,0.3)"
                         : "0 4px 15px rgba(0,0,0,0.1)",
