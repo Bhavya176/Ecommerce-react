@@ -6,13 +6,16 @@
   height: 50vh;
   z-index: 0; /* Ensure animation stays behind content */
 }
-
+@media (max-width: 600px) {
+  .background-animation {
+    top: 270px;
+  }
+}
 .content {
   position: relative; /* Ensure content is positioned relative to the viewport */
   z-index: 1; /* Ensure content stays in front of animation */
   /* Additional styles for your content */
 }
-
 
 /* Define animation effect */
 @keyframes pulse {

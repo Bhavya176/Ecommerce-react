@@ -73,7 +73,7 @@ const Navbar = () => {
         </animated.div>
 
         <button
-          className="navbar-toggler mx-2"
+          className="navbar-toggler "
           type="button"
           data-toggle="collapse"
           data-target="#navbarSupportedContent"
