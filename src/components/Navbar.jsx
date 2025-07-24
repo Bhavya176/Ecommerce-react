@@ -52,12 +52,20 @@ const Navbar = () => {
       <div className="container py-0">
         <animated.div style={logoAnimation}>
           <NavLink
-            className="fw-bold fs-4 px-2"
+            className="fw-bold fs-4 px-2 "
             to="/"
             style={{
-              fontFamily: "cursive",
-              color: "white",
+              fontFamily: "sans-serif",
+              fontWeight: 'bold',
               textDecorationLine: "none",
+              fontSize: '24px',
+              textTransform:'full-size-kana',
+              background: "linear-gradient(90deg, #3f87a6, #ebf8e1, #f69d3c)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              letterSpacing: '0.3em',
+              color: "transparent"
             }}
           >
             Universal Cart

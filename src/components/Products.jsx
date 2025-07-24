@@ -86,10 +86,17 @@ const Products = () => {
     config: { mass: 1, tension: 200, friction: 25 },
   });
 
-  
-
   return (
     <div className="container py-3">
+      <style>
+        {`
+      @media (min-width: 1200px) {
+        .container {
+          max-width: 1470px;
+        }
+      }
+    `}
+      </style>
       <h2 className="display-5 text-center">Latest Products</h2>
       <hr />
       <div className="row justify-content-center mb-3">
@@ -152,7 +159,7 @@ const Products = () => {
             return (
               <animated.div
                 key={product._id}
-                className="col-md-4 mb-4"
+                className="col-md-3 mb-3"
                 style={style}
               >
                 <div
