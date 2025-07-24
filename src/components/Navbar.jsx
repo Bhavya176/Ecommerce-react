@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useSpring, useTrail, animated } from "@react-spring/web";
 
 const Navbar = () => {
   const state = useSelector((state) => state.handleCart);
+  const [isOpen, setIsOpen] = useState(false);
 
   // Navbar slide-in animation
   const navAnimation = useSpring({
@@ -20,11 +21,6 @@ const Navbar = () => {
     config: { tension: 180, friction: 12 },
     delay: 300,
   });
-
-  // Hover animation styles (to be applied with inline styles)
-  const hoverStyle = {
-    transition: "transform 0.1s ease",
-  };
 
   const navItems = [
     { label: "Home", to: "/" },
@@ -44,28 +40,34 @@ const Navbar = () => {
     config: { mass: 1, tension: 200, friction: 18 },
   });
 
+  // Responsive toggler handler
+  const handleToggle = () => setIsOpen(!isOpen);
+
+  // Close menu on link click (for mobile)
+  const handleNavLinkClick = () => setIsOpen(false);
+
   return (
     <animated.nav
       className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top"
       style={navAnimation}
     >
-      <div className="container py-0">
+      <div className="container-fluid py-0">
         <animated.div style={logoAnimation}>
           <NavLink
-            className="fw-bold fs-4 px-2 "
+            className="fw-bold fs-4 px-2"
             to="/"
             style={{
               fontFamily: "sans-serif",
-              fontWeight: 'bold',
+              fontWeight: "bold",
               textDecorationLine: "none",
-              fontSize: '24px',
-              textTransform:'full-size-kana',
+              fontSize: "24px",
+              textTransform: "full-size-kana",
               background: "linear-gradient(90deg, #3f87a6, #ebf8e1, #f69d3c)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
-              letterSpacing: '0.3em',
-              color: "transparent"
+              letterSpacing: "0.3em",
+              color: "transparent",
             }}
           >
             Universal Cart
@@ -73,27 +75,37 @@ const Navbar = () => {
         </animated.div>
 
         <button
-          className="navbar-toggler "
+          className="navbar-toggler"
           type="button"
-          data-toggle="collapse"
-          data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
           aria-label="Toggle navigation"
+          aria-expanded={isOpen}
+          onClick={handleToggle}
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav m-auto my-2 text-center">
+        <div
+          className={`collapse navbar-collapse${isOpen ? " show" : ""}`}
+          id="navbarSupportedContent"
+        >
+          <ul className="navbar-nav mx-auto my-2 text-center">
             {trail.map((style, index) => (
-              <animated.li className="nav-item" key={navItems[index].label} style={style}>
+              <animated.li
+                className="nav-item"
+                key={navItems[index].label}
+                style={style}
+              >
                 <NavLink
                   className="nav-link"
                   to={navItems[index].to}
-                  style={hoverStyle}
-                  onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
-                  onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
+                  onClick={handleNavLinkClick}
+                  style={{ transition: "transform 0.1s ease" }}
+                  onMouseEnter={(e) =>
+                    (e.target.style.transform = "scale(1.05)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.transform = "scale(1)")
+                  }
                 >
                   {navItems[index].label}
                 </NavLink>
@@ -101,44 +113,50 @@ const Navbar = () => {
             ))}
           </ul>
 
-          <div className="buttons text-center">
+          <div className="d-flex flex-column flex-lg-row align-items-center ms-lg-3">
             <NavLink
               to="/login"
-              className="btn btn-outline-white m-2"
-              style={{
-                color: "white",
-                ...hoverStyle,
-              }}
-              onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
-              onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
+              className="btn btn-outline-light m-2"
+              style={{ transition: "transform 0.1s ease" }}
+              onClick={handleNavLinkClick}
+              onMouseEnter={(e) =>
+                (e.target.style.transform = "scale(1.05)")
+              }
+              onMouseLeave={(e) =>
+                (e.target.style.transform = "scale(1)")
+              }
             >
-              <i className="fa fa-sign-in-alt mr-1"></i> Login
+              <i className="fa fa-sign-in-alt me-1"></i> Login
             </NavLink>
 
             <NavLink
               to="/register"
-              className="btn btn-outline-white m-2"
-              style={{
-                color: "white",
-                ...hoverStyle,
-              }}
-              onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
-              onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
+              className="btn btn-outline-light m-2"
+              style={{ transition: "transform 0.1s ease" }}
+              onClick={handleNavLinkClick}
+              onMouseEnter={(e) =>
+                (e.target.style.transform = "scale(1.05)")
+              }
+              onMouseLeave={(e) =>
+                (e.target.style.transform = "scale(1)")
+              }
             >
-              <i className="fa fa-user-plus mr-1"></i> Register
+              <i className="fa fa-user-plus me-1"></i> Register
             </NavLink>
 
             <NavLink
               to="/cart"
-              className="btn btn-outline-white m-2"
-              style={{
-                color: "white",
-                ...hoverStyle,
-              }}
-              onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
-              onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
+              className="btn btn-outline-light m-2"
+              style={{ transition: "transform 0.1s ease" }}
+              onClick={handleNavLinkClick}
+              onMouseEnter={(e) =>
+                (e.target.style.transform = "scale(1.05)")
+              }
+              onMouseLeave={(e) =>
+                (e.target.style.transform = "scale(1)")
+              }
             >
-              <i className="fa fa-cart-shopping mr-1"></i> Cart ({state.length})
+              <i className="fa fa-cart-shopping me-1"></i> Cart ({state.length})
             </NavLink>
           </div>
         </div>
