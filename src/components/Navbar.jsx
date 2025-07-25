@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useSpring, useTrail, animated } from "@react-spring/web";
@@ -79,37 +79,38 @@ const Navbar = () => {
             Universal Cart
           </NavLink>
         </animated.div>
-
-        <button
-  type="button"
-  aria-label="Toggle navigation"
-  aria-expanded={isOpen}
-  onClick={handleToggle}
-  style={{
-    backgroundColor: "transparent",
-    border: "1px solid rgba(255, 255, 255, 0.5)",
-    borderRadius: "4px",
-    padding: "6px 10px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-  }}
->
-  <span
-    style={{
-      display: "inline-block",
-      width: "1.5em",
-      height: "1.5em",
-      backgroundImage:
-        "url(\"data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E\")",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      backgroundSize: "100% 100%",
-    }}
-  ></span>
-</button>
-
+        {isMobile && (
+          <button
+            type="button"
+            aria-label="Toggle navigation"
+            aria-expanded={isOpen}
+            onClick={handleToggle}
+            style={{
+              backgroundColor: "transparent",
+              border: "1px solid rgba(255, 255, 255, 0.5)",
+              borderRadius: "4px",
+              padding: "6px 10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              marginLeft: "auto",
+            }}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                width: "1.5em",
+                height: "1.5em",
+                backgroundImage:
+                  "url(\"data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E\")",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "100% 100%",
+              }}
+            ></span>
+          </button>
+        )}
 
         <div
           className={`collapse navbar-collapse${isOpen ? " show" : ""}`}
@@ -130,9 +131,7 @@ const Navbar = () => {
                   onMouseEnter={(e) =>
                     (e.target.style.transform = "scale(1.05)")
                   }
-                  onMouseLeave={(e) =>
-                    (e.target.style.transform = "scale(1)")
-                  }
+                  onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
                 >
                   {navItems[index].label}
                 </NavLink>
@@ -146,12 +145,8 @@ const Navbar = () => {
               className="btn btn-outline-light m-2"
               style={{ transition: "transform 0.1s ease" }}
               onClick={handleNavLinkClick}
-              onMouseEnter={(e) =>
-                (e.target.style.transform = "scale(1.05)")
-              }
-              onMouseLeave={(e) =>
-                (e.target.style.transform = "scale(1)")
-              }
+              onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
+              onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
             >
               <i className="fa fa-sign-in-alt me-1"></i> Login
             </NavLink>
@@ -161,12 +156,8 @@ const Navbar = () => {
               className="btn btn-outline-light m-2"
               style={{ transition: "transform 0.1s ease" }}
               onClick={handleNavLinkClick}
-              onMouseEnter={(e) =>
-                (e.target.style.transform = "scale(1.05)")
-              }
-              onMouseLeave={(e) =>
-                (e.target.style.transform = "scale(1)")
-              }
+              onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
+              onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
             >
               <i className="fa fa-user-plus me-1"></i> Register
             </NavLink>
@@ -176,12 +167,8 @@ const Navbar = () => {
               className="btn btn-outline-light m-2"
               style={{ transition: "transform 0.1s ease" }}
               onClick={handleNavLinkClick}
-              onMouseEnter={(e) =>
-                (e.target.style.transform = "scale(1.05)")
-              }
-              onMouseLeave={(e) =>
-                (e.target.style.transform = "scale(1)")
-              }
+              onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
+              onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
             >
               <i className="fa fa-cart-shopping me-1"></i> Cart ({state.length})
             </NavLink>
