@@ -2,23 +2,48 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <>
-      <footer className="mb-0 text-center">
-        <div className="d-flex align-items-center justify-content-center pb-5">
-          <div className="col-md-6">
-            <p className="mb-3 mb-md-0">Made with ❤️ by Bhavya Savaliya</p>
+    <footer
+      style={{
+        textAlign: "center",
+
+        // backgroundColor: "#f8f9fa",
+        color: "#333",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          // paddingBottom: "5rem",
+        }}
+      >
+        <div style={{ maxWidth: "600px", textAlign: "center" }}>
+          <p
+            style={{
+              // marginBottom: "1rem",
+              fontSize: "16px",
+              color: "#555",
+            }}
+          >
+            Made with ❤️ by Bhavya Savaliya
             <a
-              className="text-dark fs-4"
               href="https://github.com/Bhavya176"
               target="_blank"
               rel="noreferrer"
+              style={{
+                color: "#333",
+                fontSize: "16px",
+                textDecoration: "none",
+                marginLeft: "10px",
+              }}
             >
-              <i className="fa fa-github"></i>
+              <i className="bi bi-github"></i>
             </a>
-          </div>
+          </p>
         </div>
-      </footer>
-    </>
+      </div>
+    </footer>
   );
 };
 

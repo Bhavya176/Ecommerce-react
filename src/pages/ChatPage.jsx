@@ -1,15 +1,10 @@
 import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  useMemo,
+  useState, useEffect, useCallback, useRef, useMemo
 } from "react";
 import { Footer, Navbar } from "../components";
 import socketIOClient from "socket.io-client";
 import Axios from "axios";
 import { useSelector } from "react-redux";
-import "../style/ChatPage.css";
 import { useNavigate } from "react-router-dom";
 import { AiTwotoneAudio, AiOutlineMessage } from "react-icons/ai";
 import { MdSend } from "react-icons/md";
@@ -17,6 +12,14 @@ import { toast, ToastContainer } from "react-toastify";
 import notification from "../assets/notification.mp3";
 import { useTransition, animated, useSpring } from "@react-spring/web";
 import debounce from "lodash.debounce";
+import {
+  Layout, Card, List, Avatar, Input, Button, Typography, Badge, Spin
+} from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import "../style/ChatPage.css";
+
+const { Content, Sider } = Layout;
+const { Text } = Typography;
 
 const ENDPOINT = process.env.REACT_APP_CLIENT_URL;
 const SpeechRecognition =
@@ -30,12 +33,19 @@ const ChatPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [admins, setAdmins] = useState([]);
+  const [loading, setLoading] = useState(true);
   const socketRef = useRef();
   const userData = useSelector((state) => state.userReducer.userInfo);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 600);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   // Animate microphone pulse
   const micPulse = useSpring({
     loop: { reverse: true },
@@ -77,8 +87,7 @@ const ChatPage = () => {
         if (notificationSound.current) {
           notificationSound.current.play();
         }
-
-        toast.info(`${message.content}`, {
+        toast.info(message.content, {
           icon: <AiOutlineMessage className="notification-message" size={30} />,
         });
       }
@@ -93,20 +102,19 @@ const ChatPage = () => {
   useEffect(() => {
     const getData = async () => {
       try {
+        setLoading(true);
         const usersResponse = await Axios.get(`${ENDPOINT}users/getUser`, {
-          headers: {
-            Authorization: `Bearer ${userData.accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${userData.accessToken}` },
         });
         setUsers(usersResponse.data.data);
 
         const adminsResponse = await Axios.get(`${ENDPOINT}users/getAdmin`, {
-          headers: {
-            Authorization: `Bearer ${userData.accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${userData.accessToken}` },
         });
         setAdmins(adminsResponse.data.data);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching data:", error);
       }
     };
@@ -124,13 +132,11 @@ const ChatPage = () => {
 
   const sendMessage = useCallback(() => {
     if (!input.trim() || !selectedUser) return;
-
     const message = {
       sender: userData.id,
       receiver: selectedUser._id,
       content: input.trim(),
     };
-
     socketRef.current.emit("send message", message);
     setInput("");
   }, [input, selectedUser, userData]);
@@ -148,7 +154,7 @@ const ChatPage = () => {
     return user ? user.username : "Unknown";
   };
 
-  // Fix message filtering
+  // Filter messages for selected user
   const filteredMessages = selectedUser
     ? messages.filter((msg) => {
         const senderId =
@@ -179,93 +185,204 @@ const ChatPage = () => {
     }
   }, [userData, navigate]);
 
+  // Responsive layout: Sider collapses on mobile
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
     <>
       <Navbar />
-      {isAdmin ? (
-        <div className="container py-3">
-          <h1 className="text-center">
-            Customer {userData.role === "admin" ? "Feedback" : "Support"}
-          </h1>
-          <hr />
+      <Layout style={{ minHeight: "80vh", background: "#f5f6fa" }}>
+        {isAdmin && (
+          <Sider
+            width={200}
+            breakpoint="md"
+            collapsedWidth="0"
+            collapsible
+            collapsed={collapsed}
+            onCollapse={setCollapsed}
+            style={{
+              background: "#fff",
+              borderRight: "1px solid #f0f0f0",
+              padding: "5px 0",
+            }}
+          >
+            <div style={{ textAlign: "center", marginBottom: 16 }}>
+              <Text strong style={{ fontSize: 18 }}>
+                {userData.role === "admin" ? "User List" : "Support"}
+              </Text>
+            </div>
+            <List
+              itemLayout="horizontal"
+              dataSource={userData.role === "admin" ? users : admins}
+              renderItem={user => (
+                <List.Item
+                  className={`user-list-item${selectedUser?._id === user._id ? " selected" : ""}`}
+                  style={{
+                    cursor: "pointer",
+                    background: selectedUser?._id === user._id ? "#e6f7ff" : "transparent",
+                    borderRadius: 8,
+                    margin: "4px 8px",
+                  }}
+                  onClick={() => handleSelectUser(user)}
+                >
+                  <List.Item.Meta
+                    avatar={
+                      <Avatar
+                        icon={<UserOutlined />}
+                        style={{ background: "#1890ff" }}
+                      />
+                    }
+                    title={<span style={{ fontWeight: 500 }}>{user.username}</span>}
+                  />
+                </List.Item>
+              )}
+            />
+          </Sider>
+        )}
 
-          <div className="chat-container">
-            {userData.role === "admin" && (
-              <div className="user-list">
-                <h2>User Lists</h2>
-                {users.map((u) => (
-                  <div
-                    key={u._id}
-                    className={`user-item ${
-                      selectedUser?._id === u._id ? "selected" : ""
-                    }`}
-                    onClick={() => handleSelectUser(u)}
-                  >
-                    {u.username}
-                  </div>
-                ))}
+        <Layout>
+          <Content
+            style={{
+              padding: "5px",
+              // maxWidth: 1400,
+              margin: "0 auto",
+              width: "100%",
+              // minHeight: "100vh",
+            }}
+          >
+            <Card
+              style={{
+                width: "100%",
+                // minHeight: 500,
+                boxShadow: "0 2px 8px #f0f1f2",
+                borderRadius: 16,
+                display: "flex",
+                flexDirection: "column",
+                background: "#fff",
+              }}
+              bodyStyle={{ flex: 1, display: "flex", flexDirection: "column" }}
+            >
+              <div style={{ marginBottom: 16, textAlign: "center" }}>
+                <Text strong style={{ fontSize: 22 }}>
+                  {userData.role === "admin"
+                    ? selectedUser
+                      ? `Chat with ${selectedUser.username}`
+                      : "Select a user"
+                    : "Support Chat"}
+                </Text>
               </div>
-            )}
-
-            <div className="chat-box">
-              <div className="messages">
-                {transitions((style, msg) => {
-                  const isSent =
-                    userData.id ===
-                    (typeof msg.sender === "string" ? msg.sender : msg.sender._id);
-                  return (
-                    <animated.div
-                      style={style}
-                      key={msg._id || msg.content}
-                      className={`message-item ${isSent ? "sent" : "received"}`}
-                    >
-                      <div className="message-content">
-                        <strong>{getUsername(msg.sender)}</strong>: {msg.content}
-                      </div>
-                    </animated.div>
-                  );
-                })}
+              <div
+                className="messages"
+                style={{
+                  flex: 1,
+                  overflowY: "auto",
+                  background: "#f9fafb",
+                  borderRadius: 8,
+                  minHeight: isMobile?435:470,
+                  maxHeight: isMobile?435:470,
+                }}
+              >
+                {loading ? (
+                  <div style={{ textAlign: "center", marginTop: 60 }}>
+                    <Spin size="large" />
+                  </div>
+                ) : (
+                  transitions((style, msg) => {
+                    const isSent =
+                      userData.id ===
+                      (typeof msg.sender === "string"
+                        ? msg.sender
+                        : msg.sender._id);
+                    return (
+                      <animated.div
+                        style={style}
+                        key={msg._id || msg.content}
+                        className={`message-item ${isSent ? "sent" : "received"}`}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: isSent ? "row-reverse" : "row",
+                            alignItems: "flex-end",
+                            marginBottom: 8,
+                          }}
+                        >
+                          <Avatar
+                            style={{
+                              background: isSent ? "#1890ff" : "#f56a00",
+                              margin: isSent ? "0 0 0 8px" : "0 8px 0 0",
+                            }}
+                            icon={<UserOutlined />}
+                          />
+                          <div
+                            style={{
+                              background: isSent ? "#e6f7ff" : "#fffbe6",
+                              color: "#222",
+                              borderRadius: 12,
+                              padding: "8px 14px",
+                              maxWidth: 320,
+                              boxShadow: "0 1px 4px #f0f1f2",
+                            }}
+                          >
+                            <Text strong style={{ fontSize: 14 }}>
+                              {getUsername(msg.sender)}
+                            </Text>
+                            <div style={{ fontSize: 15, marginTop: 2 }}>
+                              {msg.content}
+                            </div>
+                          </div>
+                        </div>
+                      </animated.div>
+                    );
+                  })
+                )}
                 <div ref={messagesEndRef} />
               </div>
-
-              <div className="message-input-container">
-                <div className="input-container">
-                  <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    className="message-input"
-                    placeholder="Type your message here..."
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") sendMessage();
-                    }}
-                  />
-                  <div
-                    style={micPulse}
-                    className="audio-icon"
-                    onClick={startRecord}
-                    title="Start voice input"
-                  >
-                    <AiTwotoneAudio size={24} />
-                  </div>
-                </div>
-                <div
-                  className="send-button"
-                  onClick={sendMessage}
-                  title="Send message"
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
+              <div
+                className="message-input-container"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  marginTop: 8,
+                }}
+              >
+                <Input
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={e => {
                     if (e.key === "Enter") sendMessage();
                   }}
+                  placeholder="Type your message..."
+                  size="large"
+                  style={{ flex: 1, borderRadius: 8 }}
+                  disabled={!selectedUser}
+                />
+                <animated.div
+                  style={micPulse}
+                  className="audio-icon"
+                  onClick={startRecord}
+                  title="Start voice input"
                 >
-                  <MdSend size={28} />
-                </div>
+                  <Button
+                    shape="circle"
+                    icon={<AiTwotoneAudio size={22} />}
+                    size="large"
+                  />
+                </animated.div>
+                <Button
+                  type="primary"
+                  shape="circle"
+                  icon={<MdSend size={22} />}
+                  size="large"
+                  onClick={sendMessage}
+                  disabled={!input.trim() || !selectedUser}
+                />
               </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
+            </Card>
+          </Content>
+        </Layout>
+      </Layout>
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -278,7 +395,7 @@ const ChatPage = () => {
         toastClassName="custom-toast"
       />
       <audio src={notification} ref={notificationSound} />
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

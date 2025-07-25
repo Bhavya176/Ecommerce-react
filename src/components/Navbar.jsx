@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useSpring, useTrail, animated } from "@react-spring/web";
@@ -6,7 +6,13 @@ import { useSpring, useTrail, animated } from "@react-spring/web";
 const Navbar = () => {
   const state = useSelector((state) => state.handleCart);
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 600);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   // Navbar slide-in animation
   const navAnimation = useSpring({
     from: { transform: "translateY(-100%)", opacity: 0 },
@@ -75,14 +81,35 @@ const Navbar = () => {
         </animated.div>
 
         <button
-          className="navbar-toggler"
-          type="button"
-          aria-label="Toggle navigation"
-          aria-expanded={isOpen}
-          onClick={handleToggle}
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+  type="button"
+  aria-label="Toggle navigation"
+  aria-expanded={isOpen}
+  onClick={handleToggle}
+  style={{
+    backgroundColor: "transparent",
+    border: "1px solid rgba(255, 255, 255, 0.5)",
+    borderRadius: "4px",
+    padding: "6px 10px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+  }}
+>
+  <span
+    style={{
+      display: "inline-block",
+      width: "1.5em",
+      height: "1.5em",
+      backgroundImage:
+        "url(\"data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E\")",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      backgroundSize: "100% 100%",
+    }}
+  ></span>
+</button>
+
 
         <div
           className={`collapse navbar-collapse${isOpen ? " show" : ""}`}
