@@ -1,7 +1,7 @@
 import React, {
   useState, useEffect, useCallback, useRef, useMemo
 } from "react";
-import { Footer, Navbar } from "../components";
+import {  Navbar } from "../components";
 import socketIOClient from "socket.io-client";
 import Axios from "axios";
 import { useSelector } from "react-redux";
@@ -13,7 +13,7 @@ import notification from "../assets/notification.mp3";
 import { useTransition, animated, useSpring } from "@react-spring/web";
 import debounce from "lodash.debounce";
 import {
-  Layout, Card, List, Avatar, Input, Button, Typography, Badge, Spin
+  Layout, Card, List, Avatar, Input, Button, Typography,Spin
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import "../style/ChatPage.css";

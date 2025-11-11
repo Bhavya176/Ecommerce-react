@@ -113,7 +113,7 @@ export default function ChatbotWidget() {
     setLoading(true);
     setIsTyping(true);
 
-    // ✅ NEW: Conditionally select the model based on image presence
+    // ✅ Conditionally select the model based on image presence
     const modelToUse = image ? VISION_MODEL : TEXT_MODEL;
 
     // Prepare messages for the vision model API
@@ -138,23 +138,30 @@ export default function ChatbotWidget() {
           messages: apiMessages,
         }),
       });
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.error?.message || "API Error");
 
       const fullReply = data.choices?.[0]?.message?.content || "(no response)";
-      let display = "";
       setMessages((msgs) => [...msgs, { role: "assistant", content: "" }]);
       setIsTyping(false);
 
-      for (const char of fullReply) {
-        display += char;
-        setMessages((msgs) => {
-          const copy = [...msgs];
-          copy[copy.length - 1] = { role: "assistant", content: display };
-          return copy;
-        });
-        await new Promise((r) => setTimeout(r, 15));
-      }
+      // ✅ FIX: move looping logic into a helper function to avoid no-loop-func
+      let display = "";
+
+      const streamReply = async () => {
+        for (const char of fullReply) {
+          display += char;
+          setMessages((msgs) => {
+            const copy = [...msgs];
+            copy[copy.length - 1] = { role: "assistant", content: display };
+            return copy;
+          });
+          await new Promise((r) => setTimeout(r, 15));
+        }
+      };
+
+      await streamReply();
     } catch (err) {
       setIsTyping(false);
       setMessages((msgs) => [
@@ -162,6 +169,7 @@ export default function ChatbotWidget() {
         { role: "assistant", content: `❌ Error: ${err.message}` },
       ]);
     }
+
     setLoading(false);
   };
 
