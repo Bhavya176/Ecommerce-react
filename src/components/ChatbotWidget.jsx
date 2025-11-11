@@ -36,7 +36,7 @@ export default function ChatbotWidget() {
   const toggleTheme = () => setDarkMode((d) => !d);
   const toggleFullscreen = () => setIsFullscreen((prev) => !prev);
   const VISION_MODEL = "meta-llama/llama-3.2-11b-vision-instruct:free";
-  const TEXT_MODEL = "google/gemini-2.0-flash-exp:free";
+  const TEXT_MODEL = "tngtech/deepseek-r1t2-chimera:free";
   // model = deepseek/deepseek-r1-0528:free
   // deepseek/deepseek-chat-v3-0324:free
   // google/gemma-3n-e2b-it:free
@@ -128,14 +128,12 @@ export default function ChatbotWidget() {
       });
 
     try {
-      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      const res = await fetch(`${process.env.REACT_APP_CLIENT_URL}api/chat`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${process.env.REACT_APP_OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          // ✅ MODIFIED: Use the dynamically selected model
           model: modelToUse,
           messages: apiMessages,
         }),
