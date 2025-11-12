@@ -17,7 +17,7 @@ const GoogleAnalytics = () => {
 
     // Send pageview when the app is first loaded
     ReactGA.send({ hitType: "pageview", page: location.pathname });
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     // Track page views on route change
