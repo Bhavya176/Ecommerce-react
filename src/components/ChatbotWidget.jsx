@@ -128,7 +128,7 @@ export default function ChatbotWidget() {
       });
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_LOCAL_URL}api/chat`, {
+      const res = await fetch(`${process.env.REACT_APP_CLIENT_URL}api/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
