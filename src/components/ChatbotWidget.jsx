@@ -9,7 +9,7 @@ import {
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
+    window.matchMedia("(prefers-color-scheme: dark)").matches,
   );
   const [messages, setMessages] = useState([
     { role: "system", content: "You are a helpful assistant." },
@@ -36,7 +36,7 @@ export default function ChatbotWidget() {
   const toggleTheme = () => setDarkMode((d) => !d);
   const toggleFullscreen = () => setIsFullscreen((prev) => !prev);
   const VISION_MODEL = "meta-llama/llama-3.2-11b-vision-instruct:free";
-  const TEXT_MODEL = "tngtech/deepseek-r1t2-chimera:free";
+  const TEXT_MODEL = "openrouter/free";
   // model = deepseek/deepseek-r1-0528:free
   // deepseek/deepseek-chat-v3-0324:free
   // google/gemma-3n-e2b-it:free
@@ -128,7 +128,7 @@ export default function ChatbotWidget() {
       });
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_CLIENT_URL}api/chat`, {
+      const res = await fetch(`${process.env.REACT_APP_LOCAL_URL}api/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -329,14 +329,14 @@ export default function ChatbotWidget() {
                             ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
                             : "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
                           : darkMode
-                          ? "#2d2d2d"
-                          : "#ffffff",
+                            ? "#2d2d2d"
+                            : "#ffffff",
                       color:
                         msg.role === "user"
                           ? "#fff"
                           : darkMode
-                          ? "#e0e0e0"
-                          : "#333",
+                            ? "#e0e0e0"
+                            : "#333",
                       boxShadow: darkMode
                         ? "0 4px 15px rgba(0,0,0,0.3)"
                         : "0 4px 15px rgba(0,0,0,0.1)",
@@ -479,8 +479,8 @@ export default function ChatbotWidget() {
                         ? "#333"
                         : "#ccc"
                       : darkMode
-                      ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-                      : "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+                        ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                        : "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
                   cursor:
                     loading || (!input.trim() && !image)
                       ? "not-allowed"
